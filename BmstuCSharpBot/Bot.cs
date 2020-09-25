@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 using Telegram.Bot;
 
 namespace BmstuCSharpBot
@@ -19,11 +20,21 @@ namespace BmstuCSharpBot
         private readonly TelegramBotClient client;
 
         /// <summary>
+        /// Журналирование
+        /// </summary>
+        private readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Полное состояние бота
+        /// </summary>
+        private BotState state = new BotState();
+
+        /// <summary>
         /// Конструктор без параметров
         /// </summary>
         internal Bot()
         {
-            client = new TelegramBotClient("410878642:AAEtUaY0FriWJIfJAy7RUI46WXn3agJ95YQ");
+            client = new TelegramBotClient("410878642:AAEQJ6qcQxRvNQu3MQUAOpfrjo4nYn1UuEA");
             client.OnMessage += MessageProcessor;
         }
 
@@ -34,25 +45,36 @@ namespace BmstuCSharpBot
         /// <param name="e"></param>
         private void MessageProcessor(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
-
-            Console.WriteLine($"{e.Message.Type} {e.Message.Text}");
-
-            // Имя метода, который надо вызвать
-            string name = $"{e.Message.Type}Processor";
-
-            // Поиск метода класса
-            MethodInfo method = GetType().GetMethod(name);
-
-            // Проверка на наличие метода
-            if (method == null)
+            try
             {
-                // Метод не найден (имеет смысл записать в протокол)
-                client.SendTextMessageAsync(e.Message.Chat.Id, $"Ты мне отправил {e.Message.Type}, но я пока этого не понимаю");
+                log.Trace("-> MessageProcessor");
+                log.Debug($"{e.Message.Type} {e.Message.Text}");
+
+                // Имя метода, который надо вызвать
+                string name = $"{e.Message.Type}Processor";
+
+                // Поиск метода класса
+                MethodInfo method = GetType().GetMethod(name);
+
+                // Проверка на наличие метода
+                if (method == null)
+                {
+                    // Метод не найден (имеет смысл записать в протокол)
+                    client.SendTextMessageAsync(e.Message.Chat.Id, $"Ты мне отправил {e.Message.Type}, но я пока этого не понимаю");
+                }
+                else
+                {
+                    // Вызов метода с единственным параметром
+                    method.Invoke(this, new object[] { e.Message });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Вызов метода с единственным параметром
-                method.Invoke(this, new object[] { e.Message });
+                log.Warn(ex);
+            }
+            finally
+            {
+                log.Trace("<- MessageProcessor");
             }
         }
 
@@ -97,7 +119,15 @@ namespace BmstuCSharpBot
         /// <param name="m"></param>
         public void startCommand(Telegram.Bot.Types.Message m)
         {
+            // Ответ пользователя
             client.SendTextMessageAsync(m.Chat.Id, $"Привет, {m.Chat.FirstName}, рад знакомству!");
+
+            User user = new User()
+            {
+                ID = m.Chat.Id
+            };
+            state.AddUser(user);
+            state.Save(@"c:\state.xml");
         }
 
         /// <summary>
@@ -105,6 +135,7 @@ namespace BmstuCSharpBot
         /// </summary>
         internal void Run()
         {
+            state = BotState.Load(@"c:\state.xml");
             client.StartReceiving();
         }
     }
