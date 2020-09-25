@@ -5,30 +5,56 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using NLog;
 
 namespace BmstuCSharpBot
 {
     /// <summary>
     /// Состояние бота
     /// </summary>
+    [XmlRoot(ElementName = "BotState", Namespace = "http://www.bmstu.ru/csharp")]
     public class BotState
     {
         /// <summary>
+        /// Журналирование
+        /// </summary>
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
         /// Массив пользователей
         /// </summary>
+        [XmlElement(ElementName = "User")]
         public User[] Users;
 
         public static BotState Load(string name)
         {
-            // Объект для сериализации
-            XmlSerializer ser = new XmlSerializer(typeof(BotState));
-
-            // Открыть файл для чтения XML-данных
-            using (XmlReader rdr = XmlReader.Create(name))
+            try
             {
-                // Десериализация и формирование объекта в памяти
-                return (BotState)ser.Deserialize(rdr);
+                // Объект для сериализации
+                XmlSerializer ser = new XmlSerializer(typeof(BotState));
+
+                // Открыть файл для чтения XML-данных
+                using (XmlReader rdr = XmlReader.Create(name))
+                {
+                    // Десериализация и формирование объекта в памяти
+                    return (BotState)ser.Deserialize(rdr);
+                }
             }
+            catch (System.IO.FileNotFoundException)
+            {
+                // На всякий случай сообщим
+                log.Warn($"Файл {name} не найден, будет создан новый файл.");
+                // Создадим новое пустое состояние
+                return new BotState();
+            }
+            catch (Exception ex)
+            {
+                // На всякий случай сообщим
+                log.Warn(ex);
+                // Создадим новое пустое состояние
+                return new BotState();
+            }
+
         }
 
         /// <summary>

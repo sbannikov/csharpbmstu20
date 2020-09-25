@@ -15,6 +15,11 @@ namespace BmstuCSharpBot
     internal class Bot
     {
         /// <summary>
+        /// Имя локального файла для хранения состояния бота
+        /// </summary>
+        private const string stateFileName = @"c:\state.xml";
+
+        /// <summary>
         /// Клиент для Telegram
         /// </summary>
         private readonly TelegramBotClient client;
@@ -109,7 +114,59 @@ namespace BmstuCSharpBot
             }
             else
             {
+                // Определение пользователя
+                var u = state.Users?.FirstOrDefault(a => a.ID == m.Chat.Id);
+
+                if (u != null)
+                {
+                    // Проверка текущего состояния пользователя
+                    switch (u.State)
+                    {
+                        case UserState.Contact:
+                            client.SendTextMessageAsync(m.Chat.Id, $"Я жду номер телефона");
+                            return;
+                    }
+                }
+
                 client.SendTextMessageAsync(m.Chat.Id, $"Ты сказал мне: {m.Text}");
+            }
+        }
+
+        /// <summary>
+        /// Обработка присылаемых контактов
+        /// </summary>
+        /// <param name="m"></param>
+        public void ContactProcessor(Telegram.Bot.Types.Message m)
+        {
+            // Поиск пользователя по идентификатору
+            var u = state.Users?.FirstOrDefault(a => a.ID == m.Chat.Id);
+
+            // Проверка на существование пользователя
+            if (u == null)
+            {
+                // Ответ незнакомцу
+                client.SendTextMessageAsync(m.Chat.Id, $"Я не разговариваю с незнакомцами, используй команду /start для знакомства");
+            }
+            else
+            {
+                if (u.State != UserState.Contact)
+                {
+                    client.SendTextMessageAsync(m.Chat.Id, $"Мне сейчас не нужно это");
+                    return;
+                }
+                // Проверка на подмену контактной информации
+                if (m.Chat.Id != m.Contact.UserId)
+                {
+                    client.SendTextMessageAsync(m.Chat.Id, $"Не пытайтесь меня взломать!", replyMarkup: null);
+                    return;
+                }
+                // Сохранение телефона пользователя
+                u.Phone = m.Contact.PhoneNumber;
+                u.State = UserState.Base;
+                state.Save(stateFileName);
+
+                // Ответ пользователю
+                client.SendTextMessageAsync(m.Chat.Id, $"Спасибо за номер телефона!");
             }
         }
 
@@ -119,15 +176,46 @@ namespace BmstuCSharpBot
         /// <param name="m"></param>
         public void startCommand(Telegram.Bot.Types.Message m)
         {
-            // Ответ пользователя
-            client.SendTextMessageAsync(m.Chat.Id, $"Привет, {m.Chat.FirstName}, рад знакомству!");
+            // Поиск пользователя по идентификатору
+            var u = state.Users?.FirstOrDefault(a => a.ID == m.Chat.Id);
 
-            User user = new User()
+            // Проверяем, что пользователь полностью зарегистрирован
+            if ((u != null) && !string.IsNullOrEmpty(u.Phone))
             {
-                ID = m.Chat.Id
-            };
-            state.AddUser(user);
-            state.Save(@"c:\state.xml");
+                // Пользователь уже есть в базе
+                // Ответ пользователю
+                client.SendTextMessageAsync(m.Chat.Id, $"Привет, {m.Chat.FirstName}, с возвращением!");
+            }
+            else // Обнаружен новый пользователь
+            {
+                // Ответ пользователю
+                var button = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Телефон")
+                {
+                    RequestContact = true
+                };
+                var kbd = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(button);
+                kbd.OneTimeKeyboard = true;
+                kbd.ResizeKeyboard = true;
+
+                client.SendTextMessageAsync(m.Chat.Id, $"Привет, {m.Chat.FirstName}, рад знакомству!", replyMarkup: kbd);
+
+                // Создание нового пользователя
+                if (u == null)
+                {
+                    u = new User()
+                    {
+                        ID = m.Chat.Id,
+                        UserName = m.Chat.Username,
+                        FirstName = m.Chat.FirstName,
+                        LastName = m.Chat.LastName,
+                    };
+                    state.AddUser(u);
+                }
+                // Переход в состояние ожидания номера телефона
+                u.State = UserState.Contact;
+                // Сохранить состояние бота
+                state.Save(stateFileName);
+            }
         }
 
         /// <summary>
@@ -135,7 +223,7 @@ namespace BmstuCSharpBot
         /// </summary>
         internal void Run()
         {
-            state = BotState.Load(@"c:\state.xml");
+            state = BotState.Load(stateFileName);
             client.StartReceiving();
         }
     }
