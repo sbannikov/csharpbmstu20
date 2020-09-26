@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
@@ -14,6 +15,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Имя
         /// </summary>
+        [DisplayName("Имя")]
         [MaxLength(255)]
         [Required()]
         public string FirstName { get; set; }
@@ -21,6 +23,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Фамилия
         /// </summary>
+        [DisplayName("Фамилия")]
         [MaxLength(255)]
         [Required()]
         public string LastName { get; set; }
@@ -28,6 +31,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Группа
         /// </summary>
+        [DisplayName("Номер группы")]
         [MaxLength(16)]
         [Required()]
         public string Group { get; set; }
@@ -35,6 +39,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Личное дело
         /// </summary>
+        [DisplayName("Номер личного дела")]
         [MaxLength(16)]
         [Required()]
         public string FileNumber { get; set; }

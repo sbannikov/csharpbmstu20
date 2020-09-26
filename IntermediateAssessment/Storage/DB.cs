@@ -38,5 +38,25 @@ namespace IntermediateAssessment.Storage
         /// Список студентов
         /// </summary>
         public virtual DbSet<Student>  Students{ get; set; }
+
+        /// <summary>
+        /// Список способностей (РК1N1)
+        /// </summary>
+        public virtual DbSet<Ability> Abilities { get; set; }
+
+        /// <summary>
+        /// Список сотрудников (РК1N1)
+        /// </summary>
+        public virtual DbSet<Character> Characters { get; set; }
+
+        /// <summary>
+        /// Список ролей (РК1N1)
+        /// </summary>
+        public virtual DbSet<Role> Roles { get; set; }
+        
+        /// <summary>
+        /// Задания
+        /// </summary>
+        public virtual DbSet<Exercise>  Exercises{ get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace IntermediateAssessment.Models
         /// <summary>
         /// Номер личного дела
         /// </summary>
-        public string FileNumber;
+        public string FileNumber { get; set; }
     }
 }

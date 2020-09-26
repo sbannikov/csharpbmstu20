@@ -15,7 +15,7 @@ namespace IntermediateAssessment.Storage
     {
         /// <summary>
         /// Уникальный идентификатор записи
-        /// </summary>
+        /// </summary>       
         public Guid ID { get; set; }
 
         /// <summary>
