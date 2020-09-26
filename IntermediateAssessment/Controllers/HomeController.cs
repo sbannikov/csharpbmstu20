@@ -17,7 +17,20 @@ namespace IntermediateAssessment.Controllers
             return View(new Models.Login());
         }
 
+        /// <summary>
+        /// Административный интерфейс
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Admin()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Заглушка
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult No()
         {
             return View();
         }
@@ -62,6 +75,11 @@ namespace IntermediateAssessment.Controllers
             // Загрузка исходных данных
             var s = db.Students.Find(sid);
             var a = db.Assessments.Find(aid);
+            // Проверка на корректность
+            if (a.Number != 1)
+            {
+                return RedirectToAction("No");
+            }
             // Формирование уникального задания
             var e = new Storage.Exercise()
             {
@@ -114,6 +132,48 @@ namespace IntermediateAssessment.Controllers
             // Повторное чтение объекта из БД после сохранения
             e = db.Exercises.Find(e.ID);
             return View($"Assessment{a.Number}", e);
+        }
+
+        /// <summary>
+        /// Проверка и сохранение результатов РК1
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Assessment1(Guid id, string[] character)
+        {
+            // Чтение заданя 
+            var e = db.Exercises.Find(id);
+
+            // Проверка первого задания
+            foreach (var e1 in e.Exercises1)
+            {
+                string s = character[e1.Role.Number];
+                int n;
+                if (int.TryParse(s, out n))
+                {
+                    e1.CharacterNumber = n;
+                    e1.Correct = e1.CharacterNumber.Value == e1.Character.Number;
+                }
+                else
+                {
+                    e1.CharacterNumberMessage = "Требуется ввести число";
+                    ModelState.AddModelError("character", e1.CharacterNumberMessage);
+                }
+            }
+            if (ModelState.IsValid)
+            {
+                // Фиксация завершения задания
+                e.FinishTime = DateTime.Now;
+                db.SaveChanges();
+
+                return View("Assessment1Result", e);
+            }
+            else
+            {
+                return View(e);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,14 +19,14 @@ namespace IntermediateAssessment.Storage
         public virtual Exercise Exercise { get; set; }
 
         /// <summary>
-        /// Имя сотрудика
-        /// </summary>
-        public virtual Character Character { get; set; }
-
-        /// <summary>
-        /// Роль
+        /// Роль 
         /// </summary>
         public virtual Role Role { get; set; }
+
+        /// <summary>
+        /// Имя сотрудника
+        /// </summary>
+        public virtual Character Character { get; set; }
 
         /// <summary>
         /// Первая способность
@@ -43,6 +44,19 @@ namespace IntermediateAssessment.Storage
         [MaxLength(10)]
         [Required()]
         public string Code { get; set; }
+
+        /// <summary>
+        /// Ответ на задание - номер сотрудника
+        /// </summary>
+        public int? CharacterNumber { get; set; }
+
+        [NotMapped()]
+        public string CharacterNumberMessage { get; set; }
+
+        /// <summary>
+        /// Признак корректного ответа
+        /// </summary>
+        public bool? Correct { get; set; }
 
         /// <summary>
         /// Формирование кода задания

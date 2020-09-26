@@ -41,11 +41,11 @@
         <th>
             @Html.DisplayNameFor(model => model.Exercises1.First().Character.Number)
         </th>
-        <th>
-            Компетенция 1
+        <th colspan="2">
+            Компетенция 
         </th>
         <th>
-            Компетенция 1
+            Корректная роль
         </th>
     </tr>
 
@@ -64,41 +64,44 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Ability2.Name)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role.Name)
+            </td>
         </tr>
     }
 </table>
 
-@using (Html.BeginForm("Assessment1", "Home", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    @Html.Hidden($"id", Model.ID)
-    @Html.Hidden($"character", null)
-
-    <p>Необходимо распределить их по проектным ролям в соответствии с их компетенциями. Все роли должны быть заполнены. Заполните таблицу, проставляя табельный номер сотрудника у выбранной для него роли</p>
-    <table class="table">
+<p>Необходимо распределить их по проектным ролям в соответствии с их компетенциями. Все роли должны быть заполнены. Заполните таблицу, проставляя табельный номер сотрудника у выбранной для него роли</p>
+<table class="table">
+    <tr>
+        <th>
+            Роль
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Exercises1.First().Character.Number)
+        </th>
+    </tr>
+    @foreach (var item in Model.Exercises1.OrderBy(x => x.Role.Number))
+    {
         <tr>
-            <th>
-                Роль
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Exercises1.First().Character.Number)
-            </th>
+            <td>
+                @item.Role.Name
+            </td>
+            @if (item.Correct.Value)
+            {
+                <td class="bg-success">
+                    @item.CharacterNumber
+                </td>
+            }
+            else
+            {
+                <td class="bg-warning">
+                    @item.CharacterNumber
+                </td>
+            }
         </tr>
-        @foreach (var item in Model.Exercises1.OrderBy(x => x.Role.Number))
-        {
-            <tr>
-                <td>
-                    @item.Role.Name
-                </td>
-                <td>
-                    <input class="input-validation-error" id="character" name="character" type="text" value="@item.CharacterNumber" />
-                    <div class="text-danger">@item.CharacterNumberMessage</div>
-                </td>
-            </tr>
-        }
-    </table>
-    <h2>Задание № 2</h2>
-    <p>Исправить возможные ошибки в коде, пояснить</p>
-    <hr />
-    <input type="submit" value="Отправить результат на проверку" class="btn btn-info col-md-12" />
-}
+    }
+</table>
+<h2>Задание № 2</h2>
+<p>Исправить возможные ошибки в коде, пояснить</p>
+<hr />
