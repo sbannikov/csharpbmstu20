@@ -37,7 +37,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Список студентов
         /// </summary>
-        public virtual DbSet<Student>  Students{ get; set; }
+        public virtual DbSet<Student> Students { get; set; }
 
         /// <summary>
         /// Список способностей (РК1N1)
@@ -53,10 +53,15 @@ namespace IntermediateAssessment.Storage
         /// Список ролей (РК1N1)
         /// </summary>
         public virtual DbSet<Role> Roles { get; set; }
-        
+
         /// <summary>
         /// Задания
         /// </summary>
-        public virtual DbSet<Exercise>  Exercises{ get; set; }
+        public virtual DbSet<Exercise> Exercises { get; set; }
+
+        /// <summary>
+        /// Задания РК1N1
+        /// </summary>
+        public virtual DbSet<Exercise1> Exercises1 { get; set; }
     }
 }

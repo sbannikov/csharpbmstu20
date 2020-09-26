@@ -1,0 +1,93 @@
+﻿@model IntermediateAssessment.Storage.Exercise
+
+@{
+    ViewBag.Title = Model.Assessment.Name;
+}
+
+<h1>@Model.Assessment.Name</h1>
+
+<h2>Студент</h2>
+<table class="table-bordered col-4">
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FirstName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FirstName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.LastName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.LastName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.Group)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.Group)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FileNumber)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FileNumber)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.StartTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.StartTime)</td>
+    </tr>
+</table>
+
+<h2>Задание № 1</h2>
+<p>Вы успешно окончили МГТУ им. Н. Э. Баумана. Вы начинаете работать в небольшой компании – производителе ПО. Управление проектами в компании осуществляется по методологии Microsoft Solution Framework. Необходимо укомплектовать проектную команду. В настоящее время в компании доступны для включения в проект следующие сотрудники:</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Exercises1.First().Character.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Exercises1.First().Character.Number)
+        </th>
+        <th>
+            Компетенция 1
+        </th>
+        <th>
+            Компетенция 1
+        </th>
+    </tr>
+
+    @foreach (var item in Model.Exercises1.OrderBy(x => x.Character.Number))
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Character.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Character.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ability1.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ability2.Name)
+            </td>
+        </tr>
+    }
+</table>
+
+<p>Необходимо распределить их по проектным ролям в соответствии с их компетенциями. Все роли должны быть заполнены. Заполните таблицу, проставляя табельный номер сотрудника у выбранной для него роли</p>
+<table class="table">
+    <tr>
+        <th>
+            Роль
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Exercises1.First().Character.Number)
+        </th>
+    </tr>
+    @foreach (var item in Model.Exercises1.OrderBy(x => x.Role.Number))
+    {
+        <tr>
+            <td>
+                @item.Role.Name
+            </td>
+            <td>
+                тут ответ
+            </td>
+        </tr>
+    }
+</table>
+<h2>Задание № 2</h2>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,11 +35,13 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Вторая способность
         /// </summary>
-        public virtual Ability Ability2 { get; set; }             
+        public virtual Ability Ability2 { get; set; }
 
         /// <summary>
         /// Уникальный код задания
         /// </summary>
+        [MaxLength(10)]
+        [Required()]
         public string Code { get; set; }
 
         /// <summary>
@@ -47,7 +50,7 @@ namespace IntermediateAssessment.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Role.Number}{Character.Number,2:00}{Ability1.Number}{Ability2.Number}";
+            return $"{Role.Number,2:00}{Character.Number,2:00}{Ability1.Number,2:00}{Ability2.Number,2:00}";
         }
     }
 }
