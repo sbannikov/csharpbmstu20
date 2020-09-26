@@ -9,6 +9,11 @@ namespace IntermediateAssessment.Controllers
     public class HomeController : DbController
     {
         /// <summary>
+        /// Количество времени на рубежный контроль
+        /// </summary>
+        private const int MaxMinutes = 90;
+
+        /// <summary>
         /// Форма регистрации пользователя
         /// </summary>
         /// <returns></returns>
@@ -35,11 +40,16 @@ namespace IntermediateAssessment.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Аутентификация студента по номеру личного дела
+        /// </summary>
+        /// <param name="login">Имя личного дела</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Index([Bind(Include = "FileNumber")] Models.Login login)
         {
-            string file = login.FileNumber.ToUpper();
+            string file = login.FileNumber?.ToUpper();
             var s = db.Students.FirstOrDefault(a => a.FileNumber == file);
             if (s == null)
             {
@@ -87,6 +97,10 @@ namespace IntermediateAssessment.Controllers
                 Assessment = a
             };
 
+            // Формирование РК1
+
+            // Задание 1 РК1
+
             // Общее количество сотрудников
             int characterCount = db.Characters.Count();
 
@@ -125,6 +139,36 @@ namespace IntermediateAssessment.Controllers
                 while (db.Exercises1.Where(x => x.Code == e1.Code).FirstOrDefault() != null);
                 db.Exercises1.Add(e1);
             }
+
+            // Задание 2 РК1
+            string codever;
+            List<Storage.Exercise2> list2;
+            do
+            {
+                codever = string.Empty;
+                list2 = new List<Storage.Exercise2>();
+                // Список всех строк кода данного РК
+                foreach (int row in db.CodeRows.Where(x => x.Assessment.ID == aid).Select(x => x.Row).Distinct())
+                {
+                    // Определение количества вариантов строки
+                    int versions = db.CodeRows.Where(x => (x.Assessment.ID) == aid && (x.Row == row)).Count();
+                    // Случайный выбор варианта
+                    int version = (versions == 1) ? 1 : rnd.Next(1, versions + 1);
+                    // Загрузка варианта
+                    var code = db.CodeRows.Where(x => (x.Assessment.ID) == aid && (x.Row == row) && (x.Version == version)).First();
+                    // Ключ варианта
+                    codever += version;
+                    // Сохранение варианта
+                    list2.Add(new Storage.Exercise2()
+                    {
+                        Exercise = e,
+                        CodeRow = code
+                    });
+                }
+            }
+            while (db.Exercises.Where(x => x.CodeVersion == codever).FirstOrDefault() != null);
+            db.Exercises2.AddRange(list2);
+
             // Сохранение уникального задания
             db.Exercises.Add(e);
             db.SaveChanges();
@@ -146,6 +190,13 @@ namespace IntermediateAssessment.Controllers
             // Чтение заданя 
             var e = db.Exercises.Find(id);
 
+            // Проверка на превышение времени
+            e.FinishTime = DateTime.Now;
+            if ((e.FinishTime.Value - e.StartTime).TotalMinutes > MaxMinutes)
+            {
+                return View("OutOfTime", e);
+            }
+
             // Проверка первого задания
             foreach (var e1 in e.Exercises1)
             {
@@ -165,7 +216,6 @@ namespace IntermediateAssessment.Controllers
             if (ModelState.IsValid)
             {
                 // Фиксация завершения задания
-                e.FinishTime = DateTime.Now;
                 db.SaveChanges();
 
                 return View("Assessment1Result", e);

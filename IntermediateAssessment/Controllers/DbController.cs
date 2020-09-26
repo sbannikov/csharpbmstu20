@@ -15,6 +15,10 @@ namespace IntermediateAssessment.Controllers
     /// </summary>
     public abstract class DbController : Controller
     {
+        /// <summary>
+        /// Генератор случайных чисел
+        /// </summary>
+        protected static Random rnd = new Random();
 
         /// <summary>
         /// База данных

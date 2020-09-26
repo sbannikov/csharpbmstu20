@@ -35,12 +35,30 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Время предоставления задания
         /// </summary>
+        [DisplayName("Время сдачи РК на проверку")]
         public DateTime? FinishTime { get; set; }
 
         /// <summary>
         /// Список заданий РК1N1
         /// </summary>
         public virtual HashSet<Exercise1> Exercises1 { get; set; }
+
+        /// <summary>
+        /// Список заданий РК1N2
+        /// </summary>
+        public virtual HashSet<Exercise2> Exercises2 { get; set; }
+
+        /// <summary>
+        /// Код версии программного кода в виде последовательности цифр версий
+        /// Не более 9 версий на строку кода
+        /// </summary>
+        [MaxLength(255)]
+        public string CodeVersion { get; set; }
+        
+        /// <summary>
+        /// Ответ на задание в текстовой форме
+        /// </summary>
+        public string Answer { get; set; }
 
         /// <summary>
         /// Конструктор без параметров

@@ -1,0 +1,47 @@
+﻿@model IntermediateAssessment.Storage.Exercise
+
+@{
+    ViewBag.Title = Model.Assessment.Name;
+}
+
+<h1>@Model.Assessment.Name</h1>
+
+<h2>Студент</h2>
+<table class="table-bordered col-4">
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FirstName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FirstName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.LastName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.LastName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.Group)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.Group)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FileNumber)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FileNumber)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.StartTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.StartTime)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.FinishTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.FinishTime)</td>
+    </tr>
+</table>
+
+<p class="text-danger col-4">Допустимое время выполнения задания превышено. Придётся начать заново</p>
+
+@using (Html.BeginForm("Assessment", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("sid", Model.Student.ID)
+    @Html.Hidden("aid", Model.Assessment.ID)
+    <div class="table">
+        <input type="submit" value="@Model.Assessment.Name" class="btn btn-info col-md-4" />
+    </div>
+}

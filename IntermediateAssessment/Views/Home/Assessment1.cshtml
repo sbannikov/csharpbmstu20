@@ -98,7 +98,20 @@
         }
     </table>
     <h2>Задание № 2</h2>
-    <p>Исправить возможные ошибки в коде, пояснить</p>
+    <p>
+        Ниже приведен код, который описывает структуру данных для хранения словаря.
+        Конструктор словаря содержит инициализацию словаря единственным словом (для примера).
+        Код самой сериализации для простоты опущен.
+    </p>
     <hr />
+    foreach (var item in Model.Exercises2)
+    {
+        <p class="text-monospace">@Html.Raw(item.ToString())</p>
+    }
+    <p>Приведите XML-документ, который будет сформирован при сериализации данного словаря из одного слова</p>
+    <textarea class="input-validation-error col-md-12" rows="10" id="xml" name="xml" type="text">
+    @Model.Answer
+    </textarea>
+
     <input type="submit" value="Отправить результат на проверку" class="btn btn-info col-md-12" />
 }

@@ -150,11 +150,16 @@
     <Compile Include="Migrations\202009261959207_004.designer.cs">
       <DependentUpon>202009261959207_004.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009262209349_005.cs" />
+    <Compile Include="Migrations\202009262209349_005.designer.cs">
+      <DependentUpon>202009262209349_005.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\StudentAssessments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Samples\Sample1.cs" />
+    <Compile Include="Samples\Word.cs" />
     <Compile Include="Storage\Ability.cs" />
     <Compile Include="Storage\Assessment.cs" />
     <Compile Include="Storage\Character.cs" />
@@ -163,6 +168,7 @@
     <Compile Include="Storage\Entity.cs" />
     <Compile Include="Storage\Exercise.cs" />
     <Compile Include="Storage\Exercise1.cs" />
+    <Compile Include="Storage\Exercise2.cs" />
     <Compile Include="Storage\Role.cs" />
     <Compile Include="Storage\Student.cs" />
     <Compile Include="Utilities\Helper.cs" />
@@ -310,6 +316,7 @@
     <Content Include="Views\Home\Assessment1.cshtml" />
     <Content Include="Views\Home\No.cshtml" />
     <Content Include="Views\Home\Assessment1Result.cshtml" />
+    <Content Include="Views\Home\OutOfTime.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -331,6 +338,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009261959207_004.resx">
       <DependentUpon>202009261959207_004.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009262209349_005.resx">
+      <DependentUpon>202009262209349_005.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
