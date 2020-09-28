@@ -77,6 +77,7 @@
                 .ForeignKey("dbo.Abilities", t => t.Ability1_ID)
                 .ForeignKey("dbo.Abilities", t => t.Ability2_ID)
                 .ForeignKey("dbo.Characters", t => t.Character_ID)
+                // каскадное удаление
                 .ForeignKey("dbo.Exercises", t => t.Exercise_ID, cascadeDelete: true)
                 .ForeignKey("dbo.Roles", t => t.Role_ID)
                 .Index(t => t.Ability1_ID)

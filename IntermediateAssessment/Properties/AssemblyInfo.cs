@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется следующим образом
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных с этой сборкой.
-[assembly: AssemblyTitle("IntermediateAssessment")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Рубежный контоль")]
+[assembly: AssemblyDescription("Автоматизация проведения рубежных контролей")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IntermediateAssessment")]
-[assembly: AssemblyCopyright("© , 2020")]
+[assembly: AssemblyCompany("МГТУ им. Н.Э.Баумана")]
+[assembly: AssemblyProduct("Электронный университет")]
+[assembly: AssemblyCopyright("Copyright © МГТУ им. Н.Э.Баумана 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номер редакции и номер сборки по умолчанию,
 // используя "*", как показано ниже:
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.5")]

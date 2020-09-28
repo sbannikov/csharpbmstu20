@@ -18,7 +18,8 @@
                     })
                 .PrimaryKey(t => t.ID)
                 .ForeignKey("dbo.CodeRows", t => t.CodeRow_ID)
-                .ForeignKey("dbo.Exercises", t => t.Exercise_ID)
+                // каскадное удаление
+                .ForeignKey("dbo.Exercises", t => t.Exercise_ID, cascadeDelete: true)
                 .Index(t => t.CodeRow_ID)
                 .Index(t => t.Exercise_ID);
             
