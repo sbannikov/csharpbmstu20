@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace IntermediateAssessment.Storage
 {
@@ -58,7 +59,36 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Ответ на задание в текстовой форме
         /// </summary>
+        [AllowHtml()]
         public string Answer { get; set; }
+
+        /// <summary>
+        /// Платформа (операционная система) пользователя
+        /// </summary>
+        [MaxLength(255)]
+        [Required()]
+        public string UserPlatform { get; set; }
+
+        /// <summary>
+        /// Браузер пользователя
+        /// </summary>
+        [MaxLength(255)]
+        [Required()]
+        public string UserBrowser { get; set; }
+
+        /// <summary>
+        /// Адрес пользователя
+        /// </summary>
+        [MaxLength(255)]
+        [Required()]
+        public string UserAddress { get; set; }
+
+        /// <summary>
+        /// Сетевой узел пользователя
+        /// </summary>
+        [MaxLength(255)]
+        [Required()]
+        public string UserHost { get; set; }
 
         /// <summary>
         /// Конструктор без параметров

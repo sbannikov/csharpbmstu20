@@ -17,8 +17,8 @@
         <td class="col-2">@Html.DisplayFor(model => model.Student.LastName)</td>
     </tr>
     <tr>
-        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.Group)</td>
-        <td class="col-2">@Html.DisplayFor(model => model.Student.Group)</td>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.GroupHtml)</td>
+        <td class="col-2">@Html.Raw(Model.Student.GroupHtml)</td>
     </tr>
     <tr>
         <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FileNumber)</td>
@@ -27,6 +27,10 @@
     <tr>
         <td class="bg-light col-2">@Html.DisplayNameFor(model => model.StartTime)</td>
         <td class="col-2">@Html.DisplayFor(model => model.StartTime)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.FinishTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.FinishTime)</td>
     </tr>
 </table>
 
@@ -104,4 +108,4 @@
 </table>
 <hr />
 <h2>Задание № 2</h2>
-<p>Будет проверено вручную, если преподаватель не придумает, как это сделать автоматически</p>
+<p>Будет проверено вручную</p>

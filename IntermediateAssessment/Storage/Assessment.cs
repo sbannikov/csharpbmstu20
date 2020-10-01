@@ -22,5 +22,10 @@ namespace IntermediateAssessment.Storage
         [MaxLength(255)]
         [Required()]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Время начала рубежного контроля
+        /// </summary>
+        public DateTime StartTime { get; set; }
     }
 }

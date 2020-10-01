@@ -15,15 +15,15 @@
         <td class="col-md-2">@Html.DisplayFor(model => model.Student.LastName)</td>
     </tr>
     <tr>
-        <td class="bg-light col-md-2">@Html.DisplayNameFor(model => model.Student.Group)</td>
-        <td class="col-md-2">@Html.DisplayFor(model => model.Student.Group)</td>
+        <td class="bg-light col-md-2">@Html.DisplayNameFor(model => model.Student.GroupHtml)</td>
+        <td class="col-md-2">@Html.Raw(Model.Student.GroupHtml)</td>
     </tr>
     <tr>
         <td class="bg-light col-md-2">@Html.DisplayNameFor(model => model.Student.FileNumber)</td>
         <td class="col-md-2">@Html.DisplayFor(model => model.Student.FileNumber)</td>
     </tr>
 </table>
-<hr/>
+<hr />
 @foreach (var item in Model.Assessments)
 {
     using (Html.BeginForm("Assessment", "Home", FormMethod.Post))
@@ -36,4 +36,13 @@
         </div>
     }
 }
-
+<hr />
+<div>
+    В процессе рубежного контроля в целях предотвращения несанкционированного использования платформы фиксируются следующие параметры: 
+    <ul>
+        <li>IP-адрес клиента</li>
+        <li>Имя сетевого узла клиента</li>
+        <li>Наименование браузера клиента</li>
+        <li>Платформа (операционная система) клиента</li>
+    </ul>
+</div>

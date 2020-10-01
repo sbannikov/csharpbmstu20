@@ -9,9 +9,9 @@ namespace IntermediateAssessment.Controllers
     public class HomeController : DbController
     {
         /// <summary>
-        /// Количество времени на рубежный контроль
+        /// Количество времени на рубежный контроль в минутах
         /// </summary>
-        private const int MaxMinutes = 90;
+        private const int MaxMinutes = 91;
 
         /// <summary>
         /// Форма регистрации пользователя
@@ -38,6 +38,16 @@ namespace IntermediateAssessment.Controllers
         public ActionResult No()
         {
             return View();
+        }
+
+        /// <summary>
+        /// Текстовое сообщение
+        /// </summary>
+        /// <param name="message">Сообщение</param>
+        /// <returns></returns>
+        public ActionResult Message(string message)
+        {
+            return View((object)message);
         }
 
         /// <summary>
@@ -68,9 +78,15 @@ namespace IntermediateAssessment.Controllers
         /// <returns></returns>
         public ActionResult Assessments(Guid id)
         {
-            var sa = new Models.StudentAssessments();
-            sa.Student = db.Students.Find(id);
-            sa.Assessments = db.Assessments.OrderBy(a => a.Number).ToList();
+            var sa = new Models.StudentAssessments()
+            {
+                Student = db.Students.Find(id),
+                Assessments = db.Assessments.OrderBy(a => a.Number).ToList()
+            };
+            if (sa.Student == null)
+            {
+                return View("Message", (object)"Некорректный идентификатор объекта");
+            }
             return View(sa);
         }
 
@@ -85,16 +101,37 @@ namespace IntermediateAssessment.Controllers
             // Загрузка исходных данных
             var s = db.Students.Find(sid);
             var a = db.Assessments.Find(aid);
-            // Проверка на корректность
-            if (a.Number != 1)
+            // Проверка на корректность параметров
+            if ((s == null) || (a == null))
             {
-                return RedirectToAction("No");
+                return View("Message", (object)"Некорректный идентификатор объекта");
             }
+            // Проверка на доступное время
+            if (a.StartTime > DateTime.Now)
+            {
+                return View("Message", (object)$"{a.Name} начнётся {a.StartTime:dd-MM-yyyy} в {a.StartTime:HH:mm}");
+            }
+            // Проверка на повторный запуск
+            Storage.Exercise e = db.Exercises.Where
+                (x => (x.Student.ID == sid) && (x.Assessment.ID == aid) && x.FinishTime.HasValue).FirstOrDefault();
+
+            // Есть завершенный РК
+            if (e != null)
+            {
+                // Повторная сдача не допускается
+                return View($"Assessment{a.Number}Result", e);
+            }
+
             // Формирование уникального задания
-            var e = new Storage.Exercise()
+            e = new Storage.Exercise()
             {
                 Student = s,
-                Assessment = a
+                Assessment = a,
+                // Сведения о клиенте
+                UserAddress = Request.UserHostAddress,
+                UserBrowser = Request.Browser.Browser,
+                UserHost = Request.UserHostName,
+                UserPlatform=Request.Browser.Platform
             };
 
             // Формирование РК1
@@ -175,6 +212,10 @@ namespace IntermediateAssessment.Controllers
 
             // Повторное чтение объекта из БД после сохранения
             e = db.Exercises.Find(e.ID);
+
+            // Время окончания приёма задания
+            ViewBag.FinishTime = e.StartTime.AddMinutes(MaxMinutes);
+
             return View($"Assessment{a.Number}", e);
         }
 
@@ -185,10 +226,15 @@ namespace IntermediateAssessment.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Assessment1(Guid id, string[] character)
+        [ValidateInput(false)]
+        public ActionResult Assessment1(Guid id, string[] character, string xml)
         {
-            // Чтение заданя 
+            // Чтение задания 
             var e = db.Exercises.Find(id);
+            if (e == null)
+            {
+                return View("Message", (object)"Некорректный идентификатор объекта");
+            }
 
             // Проверка на превышение времени
             e.FinishTime = DateTime.Now;
@@ -215,6 +261,8 @@ namespace IntermediateAssessment.Controllers
             }
             if (ModelState.IsValid)
             {
+                // Фиксация ответа в свободной форме (задание 2)
+                e.Answer = xml;
                 // Фиксация завершения задания
                 db.SaveChanges();
 

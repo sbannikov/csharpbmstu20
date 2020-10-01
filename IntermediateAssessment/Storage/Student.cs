@@ -37,6 +37,16 @@ namespace IntermediateAssessment.Storage
         public string Group { get; set; }
 
         /// <summary>
+        /// Группа для отображения в HTML
+        /// </summary>
+        [DisplayName("Номер группы")]
+        public string GroupHtml
+        {
+            // Используем неразрывный дефис
+            get { return Group.Replace("-", "&#8209;"); }
+        }
+
+        /// <summary>
         /// Личное дело
         /// </summary>
         [DisplayName("Номер личного дела")]
