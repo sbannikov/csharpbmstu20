@@ -64,7 +64,7 @@ namespace IntermediateAssessment.Controllers
             var s = db.Students.FirstOrDefault(a => a.FileNumber == file);
             if (s == null)
             {
-                ModelState.AddModelError("FileNumber", "Номер личного дела не найден в списке");
+                ModelState.AddModelError("FileNumber", "Номер личного дела не найден в списке. Для регистрации на курс требуется заполнить анкету");
             }
             if (ModelState.IsValid)
             {
