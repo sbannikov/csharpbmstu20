@@ -59,7 +59,8 @@ namespace IntermediateAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index([Bind(Include = "FileNumber")] Models.Login login)
         {
-            string file = login.FileNumber?.ToUpper();
+            // Отсекаем пробелы на всякий случай
+            string file = login.FileNumber?.ToUpper().Trim();
             var s = db.Students.FirstOrDefault(a => a.FileNumber == file);
             if (s == null)
             {
