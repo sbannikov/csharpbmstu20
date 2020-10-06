@@ -20,6 +20,16 @@
                     <li class="nav-item active">
                         @Html.ActionLink("Рубежные контроли", "Index", "Home", null, new { @class = "nav-link" })
                     </li>
+                    <li class="nav-item active dropdown">
+                        <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Отчеты
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @Html.ActionLink("Статистика", "Index", "Exercises", null, new { @class = "nav-link" })
+                            <div class="dropdown-divider"></div>
+                            @Html.ActionLink("Список", "Report", "Exercises", null, new { @class = "nav-link" })
+                        </div>
+                    </li>
                     <li class="nav-item active">
                         @Html.ActionLink("Администрирование", "Admin", "Home", null, new { @class = "nav-link" })
                     </li>

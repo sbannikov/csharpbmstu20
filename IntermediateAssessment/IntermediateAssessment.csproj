@@ -130,6 +130,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DbController.cs" />
+    <Compile Include="Controllers\ExercisesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -163,7 +164,9 @@
       <DependentUpon>202010012111375_007.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\ExercisesMatrix.cs" />
     <Compile Include="Models\Login.cs" />
+    <Compile Include="Models\MatrixItem.cs" />
     <Compile Include="Models\StudentAssessments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Samples\Sample1.cs" />
@@ -328,6 +331,8 @@
     <Content Include="Views\Home\Assessment1Result.cshtml" />
     <Content Include="Views\Home\OutOfTime.cshtml" />
     <Content Include="Views\Home\Message.cshtml" />
+    <Content Include="Views\Exercises\Index.cshtml" />
+    <Content Include="Views\Exercises\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,9 +22,16 @@ namespace IntermediateAssessment.Storage
         public virtual Assessment Assessment { get; set; }
 
         /// <summary>
+        /// Идентификатор студента
+        /// </summary>
+        [Column("Student_ID")]
+        public Guid StudentID { get; set; }
+
+        /// <summary>
         /// Студент
         /// </summary>
         [Required()]
+        [ForeignKey("StudentID")]
         public virtual Student Student { get; set; }
 
         /// <summary>

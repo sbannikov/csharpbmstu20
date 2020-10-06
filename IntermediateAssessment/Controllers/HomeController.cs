@@ -132,7 +132,7 @@ namespace IntermediateAssessment.Controllers
                 UserAddress = Request.UserHostAddress,
                 UserBrowser = Request.Browser.Browser,
                 UserHost = Request.UserHostName,
-                UserPlatform=Request.Browser.Platform
+                UserPlatform = Request.Browser.Platform
             };
 
             // Формирование РК1
@@ -142,17 +142,14 @@ namespace IntermediateAssessment.Controllers
             // Общее количество сотрудников
             int characterCount = db.Characters.Count();
 
-            // Число ролей
-            int roleCount = db.Roles.Count();
+            // Список заданий
+            var elist = new List<Storage.Exercise1>();
 
-            // Список сотрудников
-            List<int> characters = Utilities.Helper.Randoms(roleCount, characterCount);
-
-            // Формирование вариванта задания для каждой из шести ролей
-            for (int n = 1; n <= roleCount; n++)
+            // Формирование варианта задания для каждой из шести ролей
+            foreach (var role in db.Roles.OrderBy(x => x.Number).ToList())
             {
                 // Количество способностей для данной роли
-                int aCount = db.Abilities.Where(x => x.Role.Number == n).Count();
+                int aCount = db.Abilities.Where(x => x.Role.Number == role.Number).Count();
                 Storage.Exercise1 e1;
                 do
                 {
@@ -161,22 +158,23 @@ namespace IntermediateAssessment.Controllers
                     int a1 = abilities[0];
                     int a2 = abilities[1];
 
-                    // Номер сотрудника
-                    int cnumber = characters[n - 1];
+                    // Номер уникального сотрудника
+                    int cnumber = Utilities.Helper.UniqueRandom(elist.Select(x => x.Character.Number).ToList(), characterCount);
 
                     e1 = new Storage.Exercise1()
                     {
-                        Role = db.Roles.Where(x => x.Number == n).First(),
+                        Role = role,
                         Character = db.Characters.Where(x => x.Number == cnumber).First(),
-                        Ability1 = db.Abilities.Where(x => x.Role.Number == n && x.Number == a1).First(),
-                        Ability2 = db.Abilities.Where(x => x.Role.Number == n && x.Number == a2).First(),
+                        Ability1 = db.Abilities.Where(x => x.Role.Number == role.Number && x.Number == a1).First(),
+                        Ability2 = db.Abilities.Where(x => x.Role.Number == role.Number && x.Number == a2).First(),
                         Exercise = e
                     };
                     e1.Code = e1.ToString();
                 }
                 while (db.Exercises1.Where(x => x.Code == e1.Code).FirstOrDefault() != null);
-                db.Exercises1.Add(e1);
+                elist.Add(e1);
             }
+            db.Exercises1.AddRange(elist);
 
             // Задание 2 РК1
             string codever;

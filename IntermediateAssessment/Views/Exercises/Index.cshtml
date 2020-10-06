@@ -1,0 +1,21 @@
+﻿@model IntermediateAssessment.Models.ExercisesMatrix
+
+@{
+    ViewBag.Title = "Статистика";
+}
+
+<h2>Статистика</h2>
+
+<table class="table-bordered" style="border-width:thick;">
+    @foreach (var ol in Model.Items)
+    {
+        <tr style="border-width:thick;">
+            @foreach (var item in ol)
+            {
+                <td style="background-color: @item.Color;border-width: thick;" width="75px" height="75px">
+                    <!-- @item.FileNumber -->&nbsp;
+                </td>
+            }
+        </tr>
+    }
+</table>

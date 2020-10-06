@@ -38,5 +38,22 @@ namespace IntermediateAssessment.Utilities
 
             return list;
         }
+
+        /// <summary>
+        /// Генерация случайного числа от 1 до max, которого нет в списке list
+        /// </summary>
+        /// <param name="list">Список целых чисел</param>
+        /// <param name="max">Максимальное число</param>
+        /// <returns></returns>
+        public static int UniqueRandom(List<int> list, int max)
+        {
+            int n;
+            do
+            {
+                n = rnd.Next(1, max + 1);
+            }
+            while (list.Contains(n));
+            return n;
+        }
     }
 }
