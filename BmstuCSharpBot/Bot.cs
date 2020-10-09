@@ -35,6 +35,11 @@ namespace BmstuCSharpBot
         private BotState state = new BotState();
 
         /// <summary>
+        /// База данных
+        /// </summary>
+        private Database db = new Database();
+
+        /// <summary>
         /// Конструктор без параметров
         /// </summary>
         internal Bot()
@@ -54,6 +59,7 @@ namespace BmstuCSharpBot
             {
                 log.Trace("-> MessageProcessor");
                 log.Debug($"{e.Message.Type} {e.Message.Text}");
+                db.WriteMessage($"{e.Message.Type} {e.Message.Text}");
 
                 // Имя метода, который надо вызвать
                 string name = $"{e.Message.Type}Processor";
@@ -95,6 +101,15 @@ namespace BmstuCSharpBot
                 // Это команда - переходим к вызову метода команды
                 // Имя метода, который надо вызвать
                 string cmd = m.Text.Substring(1).ToLower();
+                // Перевод первой буквы в прописные
+                cmd = cmd.Substring(0, 1).ToUpper() + cmd.Substring(1);
+                int index = cmd.IndexOf('@');
+                if (index > 0)
+                {
+                    // Отрежем все символы после @
+                    cmd = cmd.Substring(0, index);
+                }
+
                 string name = $"{cmd}Command";
 
                 // Поиск метода класса
@@ -155,13 +170,32 @@ namespace BmstuCSharpBot
                     return;
                 }
                 // Проверка на подмену контактной информации
-                if (m.Chat.Id != m.Contact.UserId)
+                if (m.From.Id != m.Contact.UserId)
                 {
                     client.SendTextMessageAsync(m.Chat.Id, $"Не пытайтесь меня взломать!", replyMarkup: null);
                     return;
                 }
+
+                // Проверка по базе данных - есть ли телефон в списках
+                var user = db.GetUser(m.Contact.PhoneNumber);
+                if (user == null)
+                {
+                    client.SendTextMessageAsync(m.Chat.Id, $"Вас нету в списках, прошу сперва заполнить анкету", replyMarkup: null);
+                    return;
+                }
+
                 // Сохранение телефона пользователя
                 u.Phone = m.Contact.PhoneNumber;
+                u.Email = user.Email;
+                u.Group = user.Group;
+                if (string.IsNullOrEmpty(u.FirstName))
+                {
+                    u.FirstName = user.FirstName;
+                }
+                if (string.IsNullOrEmpty(u.LastName))
+                {
+                    u.LastName = user.LastName;
+                }
                 u.State = UserState.Base;
                 state.Save(stateFileName);
 
@@ -174,17 +208,17 @@ namespace BmstuCSharpBot
         /// Команда /start
         /// </summary>
         /// <param name="m"></param>
-        public void startCommand(Telegram.Bot.Types.Message m)
+        public void StartCommand(Telegram.Bot.Types.Message m)
         {
             // Поиск пользователя по идентификатору
-            var u = state.Users?.FirstOrDefault(a => a.ID == m.Chat.Id);
+            var u = state.Users?.FirstOrDefault(a => a.ID == m.From.Id);
 
             // Проверяем, что пользователь полностью зарегистрирован
-            if ((u != null) && !string.IsNullOrEmpty(u.Phone))
+            if ((u != null) && u.IsFull)
             {
                 // Пользователь уже есть в базе
                 // Ответ пользователю
-                client.SendTextMessageAsync(m.Chat.Id, $"Привет, {m.Chat.FirstName}, с возвращением!");
+                client.SendTextMessageAsync(m.Chat.Id, $"Привет, {m.From.FirstName}, с возвращением!");
             }
             else // Обнаружен новый пользователь
             {
@@ -197,17 +231,17 @@ namespace BmstuCSharpBot
                 kbd.OneTimeKeyboard = true;
                 kbd.ResizeKeyboard = true;
 
-                client.SendTextMessageAsync(m.Chat.Id, $"Привет, {m.Chat.FirstName}, рад знакомству!", replyMarkup: kbd);
+                client.SendTextMessageAsync(m.From.Id, $"Привет, {m.From.FirstName}, рад знакомству!", replyMarkup: kbd);
 
                 // Создание нового пользователя
                 if (u == null)
                 {
                     u = new User()
                     {
-                        ID = m.Chat.Id,
-                        UserName = m.Chat.Username,
-                        FirstName = m.Chat.FirstName,
-                        LastName = m.Chat.LastName,
+                        ID = m.From.Id,
+                        UserName = m.From.Username,
+                        FirstName = m.From.FirstName,
+                        LastName = m.From.LastName,
                     };
                     state.AddUser(u);
                 }
@@ -216,6 +250,15 @@ namespace BmstuCSharpBot
                 // Сохранить состояние бота
                 state.Save(stateFileName);
             }
+        }
+
+        /// <summary>
+        /// Команда регистрации (дублирует старт)
+        /// </summary>
+        /// <param name="m"></param>
+        public void RegisterCommand(Telegram.Bot.Types.Message m)
+        {
+            StartCommand(m);
         }
 
         /// <summary>

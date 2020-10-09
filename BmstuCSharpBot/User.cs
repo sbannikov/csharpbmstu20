@@ -47,5 +47,28 @@ namespace BmstuCSharpBot
         /// </summary>
         [XmlAttribute()]
         public UserState State;
+
+        /// <summary>
+        /// Электрическая почта
+        /// </summary>
+        public string Email;
+
+        /// <summary>
+        /// Номер личного дела (зачетной книжки)
+        /// </summary>
+        public string FileName;
+
+        /// <summary>
+        /// Номер группы
+        /// </summary>
+        public string Group;
+
+        public bool IsFull
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Phone) && !string.IsNullOrEmpty(Email);
+            }
+        }
     }
 }
