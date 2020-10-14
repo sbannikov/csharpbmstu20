@@ -48,8 +48,19 @@ namespace IntermediateAssessment.Controllers
         /// <returns></returns>
         public ActionResult Report()
         {
-            var list = db.Students.OrderBy(a=>a.Group).ThenBy(a => a.LastName).ToList();
-            return View(list);
+            var groups = db.Students.Select(a => a.Group).Distinct()
+                .Select(a => new Models.Group() { GroupName = a }).ToList();
+
+            foreach (Models.Group group in groups)
+            {
+                var students = db.Students.Where(a => a.Group == group.GroupName).OrderBy(a => a.LastName).ToList();
+                foreach (var student in students)
+                {
+                    group.Students.Add(new Models.Student(student));
+                }
+            }
+
+            return View(groups);
         }
     }
 }

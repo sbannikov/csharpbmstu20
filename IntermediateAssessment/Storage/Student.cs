@@ -50,6 +50,12 @@ namespace IntermediateAssessment.Storage
         public string FileNumber { get; set; }
 
         /// <summary>
+        /// Порядковый номер в списке группы (для ЭУ)
+        /// </summary>
+        [DisplayName("№ п/п")]
+        public int ListNumber { get; set; }
+
+        /// <summary>
         /// Список РК
         /// </summary>
         public virtual HashSet<Exercise> Exercises { get; set; }
