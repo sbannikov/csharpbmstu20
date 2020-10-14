@@ -48,7 +48,7 @@ namespace IntermediateAssessment.Controllers
         /// <returns></returns>
         public ActionResult Report()
         {
-            var list = db.Students.OrderBy(a => a.LastName).ToList();
+            var list = db.Students.OrderBy(a=>a.Group).ThenBy(a => a.LastName).ToList();
             return View(list);
         }
     }
