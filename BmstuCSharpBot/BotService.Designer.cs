@@ -31,8 +31,9 @@
             // 
             // BotService
             // 
+            this.AutoLog = false;
             this.CanPauseAndContinue = true;
-            this.ServiceName = "BotService";
+            this.ServiceName = "BmstuBotService";
 
         }
 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace BmstuCSharpBot
 {
@@ -21,12 +22,31 @@ namespace BmstuCSharpBot
         private Bot bot;
 
         /// <summary>
+        /// Журналирование
+        /// </summary>
+        private readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
         /// Конструктор 
         /// </summary>
         public BotService()
         {
             InitializeComponent();
             bot = new Bot();
+        }
+
+        /// <summary>
+        /// Протоколирование сообщения
+        /// </summary>
+        /// <param name="s">Сообщение</param>
+        /// <param name="entryType">Тип сообщения</param>
+        /// <param name="id">Идентификатор сообщения</param>
+        private void WriteMessage(EventID id, string s, LogLevel entryType)
+        {
+            // Протоколирование с сохранением идентификатора события для журнала Windows
+            var logEvent = new LogEventInfo(entryType, null, s);
+            logEvent.Properties.Add("EventID", (int)id);
+            log.Log(logEvent);
         }
 
         /// <summary>
@@ -43,7 +63,15 @@ namespace BmstuCSharpBot
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            Start();
+            try
+            {
+                Start();
+                WriteMessage(EventID.StartService, "Сервис успешно запущен", LogLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                log.Fatal(ex);
+            }
         }
 
         /// <summary>
@@ -51,7 +79,15 @@ namespace BmstuCSharpBot
         /// </summary>
         protected override void OnStop()
         {
-            bot.Stop();
+            try
+            {
+                bot.Stop();
+                WriteMessage(EventID.StopService, "Сервис успешно остановлен", LogLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                log.Warn(ex);
+            }
         }
 
         /// <summary>
@@ -59,7 +95,15 @@ namespace BmstuCSharpBot
         /// </summary>
         protected override void OnPause()
         {
-            bot.Stop();
+            try
+            {
+                bot.Stop();
+                WriteMessage(EventID.PauseService, "Сервис успешно приостановлен", LogLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
         }
 
         /// <summary>
@@ -67,8 +111,15 @@ namespace BmstuCSharpBot
         /// </summary>
         protected override void OnContinue()
         {
-            bot.Start();
+            try
+            {
+                bot.Start();
+                WriteMessage(EventID.ContinueService, "Сервис успешно возобновлён", LogLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
         }
-
     }
 }

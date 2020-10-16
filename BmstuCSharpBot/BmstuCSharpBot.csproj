@@ -84,6 +84,7 @@
     </Compile>
     <Compile Include="BotState.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="EventID.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
