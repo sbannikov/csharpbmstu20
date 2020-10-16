@@ -264,10 +264,19 @@ namespace BmstuCSharpBot
         /// <summary>
         /// Запуск бота
         /// </summary>
-        internal void Run()
+        internal void Start()
         {
             state = BotState.Load(stateFileName);
             client.StartReceiving();
+        }
+
+        /// <summary>
+        /// Останов бота
+        /// </summary>
+        internal void Stop()
+        {
+            client.StopReceiving();
+            state.Save(stateFileName);
         }
     }
 }
