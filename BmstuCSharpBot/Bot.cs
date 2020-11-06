@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using NLog;
 using Telegram.Bot;
+using System.Net.Sockets;
 
 namespace BmstuCSharpBot
 {
     /// <summary>
     /// Бот для Telegram
     /// </summary>
-    internal class Bot
+    public class Bot
     {
         /// <summary>
         /// Имя локального файла для хранения состояния бота
@@ -40,12 +42,33 @@ namespace BmstuCSharpBot
         private Database db = new Database();
 
         /// <summary>
+        /// Управляющий сервис
+        /// </summary>
+        private ControlService svc ;
+
+        /// <summary>
+        /// Домик для сервиса
+        /// </summary>
+        private ServiceHost host;
+
+        /// <summary>
+        /// Клиент для передачи по UDP
+        /// </summary>
+        private UdpClient udp;
+
+        /// <summary>
         /// Конструктор без параметров
         /// </summary>
         internal Bot()
         {
             client = new TelegramBotClient("410878642:AAEQJ6qcQxRvNQu3MQUAOpfrjo4nYn1UuEA");
             client.OnMessage += MessageProcessor;
+
+            // Управляющий сервис
+            svc = new ControlService(this);
+
+            // Домик для моего управляющего сервиса
+            host = new ServiceHost(svc);
         }
 
         /// <summary>
@@ -58,8 +81,17 @@ namespace BmstuCSharpBot
             try
             {
                 log.Trace("-> MessageProcessor");
-                log.Debug($"{e.Message.Type} {e.Message.Text}");
-                db.WriteMessage($"{e.Message.Type} {e.Message.Text}");
+                string m = $"{e.Message.Type} {e.Message.Text}";
+                log.Debug(m);
+                db.WriteMessage(m);
+
+                // Трассировка для консоли управления
+                if (udp != null)
+                {
+                    // Отправить пакет по UDP
+                    byte[] data = Encoding.UTF8.GetBytes(m);
+                    int n = udp.Send(data, data.Length);
+                }
 
                 // Имя метода, который надо вызвать
                 string name = $"{e.Message.Type}Processor";
@@ -268,6 +300,7 @@ namespace BmstuCSharpBot
         {
             state = BotState.Load(stateFileName);
             client.StartReceiving();
+            host.Open();
         }
 
         /// <summary>
@@ -275,8 +308,19 @@ namespace BmstuCSharpBot
         /// </summary>
         internal void Stop()
         {
+            host.Close();
             client.StopReceiving();
             state.Save(stateFileName);
+        }
+
+        public void StartTrace(string ip)
+        {
+            udp = new UdpClient(ip, 9999);
+        }
+
+        public void StopTrace()
+        {
+            udp = null;
         }
     }
 }

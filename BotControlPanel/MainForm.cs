@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Sockets;
+using System.ServiceModel;
 
 namespace BotControlPanel
 {
@@ -16,11 +18,39 @@ namespace BotControlPanel
     public partial class MainForm : Form
     {
         /// <summary>
+        /// Клиент управляющего сервиса
+        /// </summary>
+        private ControlReference.ControlServiceClient client;
+
+        private UdpClient udp;
+
+        private System.Collections.Concurrent.ConcurrentQueue<string> queue;
+
+        /// <summary>
         /// Конструктор
         /// </summary>
         public MainForm()
         {
             InitializeComponent();
+
+            client = new ControlReference.ControlServiceClient();
+            udp = new UdpClient(9999);
+            udp.BeginReceive(new AsyncCallback(OnUdpUpdate), udp);
+            queue = new System.Collections.Concurrent.ConcurrentQueue<string>();
+        }
+
+        /// <summary>
+        /// Асинхронный прием сообщений по UDP
+        /// </summary>
+        /// <param name="result"></param>
+        private void OnUdpUpdate(IAsyncResult result)
+        {
+            UdpClient socket = result.AsyncState as UdpClient;
+            System.Net.IPEndPoint source = null;
+            byte[] message = socket.EndReceive(result, ref source);
+            string s = Encoding.UTF8.GetString(message);
+            queue.Enqueue(s);
+            udp.BeginReceive(new AsyncCallback(OnUdpUpdate), udp);
         }
 
         /// <summary>
@@ -119,6 +149,12 @@ namespace BotControlPanel
             {
                 timer.Stop();
                 UpdateButtons();
+
+                string s;
+                while (queue.TryDequeue(out s))
+                {
+                    list.Items.Add(s);
+                }
             }
             catch (Exception ex)
             {
@@ -128,7 +164,6 @@ namespace BotControlPanel
             {
                 timer.Start();
             }
-
         }
 
         /// <summary>
@@ -139,6 +174,50 @@ namespace BotControlPanel
         {
             MessageBox.Show(ex.Message, "Панель управления", MessageBoxButtons.OK, MessageBoxIcon.Error);
             list.Items.Add(ex.Message);
+        }
+
+        /// <summary>
+        /// Запрос состояния сервиса
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void queryButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string s = client.Query();
+                list.Items.Add(s);
+            }
+            catch (Exception ex)
+            {
+                Message(ex);
+            }
+        }
+
+        private void startTraceButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                client.StartTrace("127.0.0.1");
+                list.Items.Add("Трассировка включена");
+            }
+            catch (Exception ex)
+            {
+                Message(ex);
+            }
+        }
+
+        private void stopTraceButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                client.StopTrace();
+                list.Items.Add("Трассировка выключена");
+            }
+            catch (Exception ex)
+            {
+                Message(ex);
+            }
         }
     }
 }

@@ -27,6 +27,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -83,8 +84,10 @@
       <DependentUpon>BotService.cs</DependentUpon>
     </Compile>
     <Compile Include="BotState.cs" />
+    <Compile Include="ControlService.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="EventID.cs" />
+    <Compile Include="IControlService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
