@@ -7,6 +7,7 @@
 
     /// <summary>
     /// Конфигурация миграций
+    /// Enable-Migrations -- включение механизма миграций (однократно)
     /// Add-Migration nnn -- добавление очередной миграции
     /// Update-Database -TargetMigration nnn -- переход к нужной миграции
     /// </summary>

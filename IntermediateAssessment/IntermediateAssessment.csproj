@@ -167,6 +167,10 @@
     <Compile Include="Migrations\202010142139378_008.designer.cs">
       <DependentUpon>202010142139378_008.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011201028099_009.cs" />
+    <Compile Include="Migrations\202011201028099_009.designer.cs">
+      <DependentUpon>202011201028099_009.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ExercisesMatrix.cs" />
     <Compile Include="Models\Group.cs" />
@@ -186,6 +190,7 @@
     <Compile Include="Storage\Exercise.cs" />
     <Compile Include="Storage\Exercise1.cs" />
     <Compile Include="Storage\Exercise2.cs" />
+    <Compile Include="Storage\Principle.cs" />
     <Compile Include="Storage\Role.cs" />
     <Compile Include="Storage\Student.cs" />
     <Compile Include="Utilities\Helper.cs" />
@@ -372,6 +377,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010142139378_008.resx">
       <DependentUpon>202010142139378_008.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011201028099_009.resx">
+      <DependentUpon>202011201028099_009.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

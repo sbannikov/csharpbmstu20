@@ -73,5 +73,10 @@ namespace IntermediateAssessment.Storage
         /// Строки кода
         /// </summary>
         public virtual DbSet<CodeRow> CodeRows { get; set; }
+
+        /// <summary>
+        /// Принципы Agiles
+        /// </summary>
+        public virtual DbSet<Principle>  Principles { get; set; }
     }
 }

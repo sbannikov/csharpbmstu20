@@ -16,6 +16,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Уникальный идентификатор записи
         /// </summary>       
+        [Key()]
         public Guid ID { get; set; }
 
         /// <summary>
@@ -25,6 +26,6 @@ namespace IntermediateAssessment.Storage
         {
             // Генерация нового уникального идентификатора
             ID = Guid.NewGuid();
-        }    
+        }
     }
 }
