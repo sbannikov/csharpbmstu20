@@ -10,14 +10,14 @@ namespace BmstuCSharpBot
     /// <summary>
     /// База данных
     /// </summary>
-    class Database
+    public class Database : IDatabase
     {
         /// <summary>
         /// Соединение с базой данных
         /// </summary>
         private SqlConnection conn;
 
-        internal Database()
+        public Database()
         {
             conn = new SqlConnection(@"Data Source=.\SQLEXPRESS;Database=BOT;Integrated Security=SSPI;");
             conn.Open();
@@ -28,7 +28,7 @@ namespace BmstuCSharpBot
         /// </summary>
         /// <param name="phone">Номер телефона</param>
         /// <returns></returns>
-        internal bool IsPhone(string phone)
+        public bool IsPhone(string phone)
         {
             SqlCommand cmd;
             cmd = conn.CreateCommand();
@@ -38,7 +38,12 @@ namespace BmstuCSharpBot
             return result != null;
         }
 
-        internal User GetUser(string phone)
+        /// <summary>
+        /// Найти пользователя по номеру телефона
+        /// </summary>
+        /// <param name="phone">Номер телефона</param>
+        /// <returns>Пользователь или null, если пользователь не найден</returns>
+        public User GetUser(string phone)
         {
             SqlCommand cmd;
             cmd = conn.CreateCommand();
@@ -66,7 +71,7 @@ namespace BmstuCSharpBot
         /// Запись сообщения в базу данных
         /// </summary>
         /// <param name="message"></param>
-        internal void WriteMessage(string message)
+        public void WriteMessage(string message)
         {
             SqlCommand cmd;
             cmd = conn.CreateCommand();

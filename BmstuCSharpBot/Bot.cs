@@ -39,7 +39,7 @@ namespace BmstuCSharpBot
         /// <summary>
         /// База данных
         /// </summary>
-        private Database db = new Database();
+        private IDatabase db = new DB();
 
         /// <summary>
         /// Управляющий сервис
