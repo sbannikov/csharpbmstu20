@@ -10,6 +10,9 @@ using IntermediateAssessment.Storage;
 
 namespace IntermediateAssessment.Controllers
 {
+    /// <summary>
+    /// Формирование отчетов
+    /// </summary>
     public class ExercisesController : DbController
     {
         /// <summary>

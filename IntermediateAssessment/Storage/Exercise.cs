@@ -58,6 +58,20 @@ namespace IntermediateAssessment.Storage
         public virtual HashSet<Exercise2> Exercises2 { get; set; }
 
         /// <summary>
+        /// Список заданий РК2N1
+        /// </summary>
+        public virtual HashSet<Exercise3> Exercises3 { get; set; }
+
+        /// <summary>
+        /// Код первого задания
+        /// РК1 - не используется
+        /// РК2 - 12 шестнадцатеричных цифр
+        /// </summary>
+        [MaxLength(12)]
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Уникальный код второго задания
         /// Код версии программного кода в виде последовательности цифр версий
         /// Не более 9 версий на строку кода
         /// </summary>

@@ -7,9 +7,9 @@ using System.Web;
 namespace IntermediateAssessment.Storage
 {
     /// <summary>
-    /// РК 1 задание № 2
+    /// РК2 Задание № 1 - Agile
     /// </summary>
-    public class Exercise2 : Entity
+    public class Exercise3 : Entity
     {
         /// <summary>
         /// Задание студенту на РК
@@ -18,17 +18,14 @@ namespace IntermediateAssessment.Storage
         public virtual Exercise Exercise { get; set; }
 
         /// <summary>
-        /// Строка кода
+        /// Принцип Agile (один из 12)
         /// </summary>
-        public virtual CodeRow CodeRow { get; set; }
+        [Required()]
+        public virtual Principle Principle { get; set; }
 
         /// <summary>
-        /// Представление строки кода для HTML
+        /// Порядковый номер принципа в задании
         /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.IsNullOrEmpty(CodeRow.Code) ? "&nbsp;" : CodeRow.Code.Replace(" ", "&nbsp;");
-        }
+        public int Number { get; set; }
     }
 }

@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 namespace IntermediateAssessment.Storage
 {
     /// <summary>
-    /// Задание № 1 РК1
+    /// РК1 Задание № 1 - Microsoft Solution Foundation
     /// </summary>
     public class Exercise1 : Entity
     {
         /// <summary>
         /// Задание студенту на РК
         /// </summary>
+        [Required()]
         public virtual Exercise Exercise { get; set; }
 
         /// <summary>

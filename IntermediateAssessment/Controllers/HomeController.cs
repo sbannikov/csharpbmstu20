@@ -6,6 +6,9 @@ using System.Web.Mvc;
 
 namespace IntermediateAssessment.Controllers
 {
+    /// <summary>
+    /// Формирование и фиксирование заданий
+    /// </summary>
     public class HomeController : DbController
     {
         /// <summary>
@@ -92,6 +95,126 @@ namespace IntermediateAssessment.Controllers
         }
 
         /// <summary>
+        /// РК 1 Задание 1 - формирование
+        /// </summary>
+        /// <param name="e"></param>
+        private void Exercise1(Storage.Exercise e)
+        {
+            // Общее количество сотрудников
+            int characterCount = db.Characters.Count();
+
+            // Список заданий
+            var elist = new List<Storage.Exercise1>();
+
+            // Формирование варианта задания для каждой из шести ролей
+            foreach (var role in db.Roles.OrderBy(x => x.Number).ToList())
+            {
+                // Количество способностей для данной роли
+                int aCount = db.Abilities.Where(x => x.Role.Number == role.Number).Count();
+                Storage.Exercise1 e1;
+                do
+                {
+                    // Вектор способностей
+                    List<int> abilities = Utilities.Helper.Randoms(2, aCount);
+                    int a1 = abilities[0];
+                    int a2 = abilities[1];
+
+                    // Номер уникального сотрудника
+                    int cnumber = Utilities.Helper.UniqueRandom(elist.Select(x => x.Character.Number).ToList(), characterCount);
+
+                    e1 = new Storage.Exercise1()
+                    {
+                        Role = role,
+                        Character = db.Characters.Where(x => x.Number == cnumber).First(),
+                        Ability1 = db.Abilities.Where(x => x.Role.Number == role.Number && x.Number == a1).First(),
+                        Ability2 = db.Abilities.Where(x => x.Role.Number == role.Number && x.Number == a2).First(),
+                        Exercise = e
+                    };
+                    e1.Code = e1.ToString();
+                }
+                while (db.Exercises1.Where(x => x.Code == e1.Code).FirstOrDefault() != null);
+                elist.Add(e1);
+            }
+            db.Exercises1.AddRange(elist);
+        }
+
+        /// <summary>
+        /// РК1 Задание 2 - Формирование
+        /// </summary>
+        /// <param name="aid">Идентификатор РК</param>
+        /// <param name="e">Уникальное задание</param>
+        private void Exercise2(Guid aid, Storage.Exercise e)
+        {
+            string codever;
+            List<Storage.Exercise2> list2;
+            do
+            {
+                codever = string.Empty;
+                list2 = new List<Storage.Exercise2>();
+                // Список всех строк кода данного РК
+                foreach (int row in db.CodeRows.Where(x => x.Assessment.ID == aid).Select(x => x.Row).Distinct())
+                {
+                    // Определение количества вариантов строки
+                    int versions = db.CodeRows.Where(x => (x.Assessment.ID) == aid && (x.Row == row)).Count();
+                    // Случайный выбор варианта
+                    int version = (versions == 1) ? 1 : rnd.Next(1, versions + 1);
+                    // Загрузка варианта
+                    var code = db.CodeRows.Where(x => (x.Assessment.ID) == aid && (x.Row == row) && (x.Version == version)).First();
+                    // Ключ варианта
+                    codever += version;
+                    // Сохранение варианта
+                    list2.Add(new Storage.Exercise2()
+                    {
+                        Exercise = e,
+                        CodeRow = code
+                    });
+                }
+            }
+            while (db.Exercises.Where(x => x.CodeVersion == codever).FirstOrDefault() != null);
+            // Сохранение уникального кода задания
+            e.CodeVersion = codever;
+            db.Exercises2.AddRange(list2);
+        }
+
+        /// <summary>
+        /// РК2 Задание 1 - Формирование
+        /// </summary>
+        /// <param name="e"></param>
+        private void Exercise3(Storage.Exercise e)
+        {
+            // Количество принципов
+            int principles = db.Principles.Count();
+
+            string code; // Код задания
+            List<int> list; // Вектор номеров принципов
+
+            // Формирование уникальной комбинации принципов Agile
+            do
+            {
+                list = Utilities.Helper.Randoms(principles, principles);
+                code = string.Join("", list.Select(a => a.ToString("X1")));
+            }
+            while (db.Exercises.Where(x => x.Code == code).Any());
+
+            // Формирование задания
+            for (int i = 0; i < principles; i++)
+            {
+                int n = list[i];
+                // Считаем, что принцип в базе существует
+                var p = db.Principles.Where(a => a.Number == n).First();
+                var item = new Storage.Exercise3()
+                {
+                    Exercise = e,
+                    Principle = p,
+                    Number = i
+                };
+                db.Exercises3.Add(item);
+            }
+            // Сохранение уникального кода
+            e.Code = code;
+        }
+
+        /// <summary>
         /// Рубежный контроль - запуск
         /// </summary>
         /// <param name="sid">Идентификатор студента</param>
@@ -135,75 +258,13 @@ namespace IntermediateAssessment.Controllers
                 UserPlatform = Request.Browser.Platform
             };
 
-            // Формирование РК1
-
-            // Задание 1 РК1
-
-            // Общее количество сотрудников
-            int characterCount = db.Characters.Count();
-
-            // Список заданий
-            var elist = new List<Storage.Exercise1>();
-
-            // Формирование варианта задания для каждой из шести ролей
-            foreach (var role in db.Roles.OrderBy(x => x.Number).ToList())
+            switch (a.Number)
             {
-                // Количество способностей для данной роли
-                int aCount = db.Abilities.Where(x => x.Role.Number == role.Number).Count();
-                Storage.Exercise1 e1;
-                do
-                {
-                    // Вектор способностей
-                    List<int> abilities = Utilities.Helper.Randoms(2, aCount);
-                    int a1 = abilities[0];
-                    int a2 = abilities[1];
-
-                    // Номер уникального сотрудника
-                    int cnumber = Utilities.Helper.UniqueRandom(elist.Select(x => x.Character.Number).ToList(), characterCount);
-
-                    e1 = new Storage.Exercise1()
-                    {
-                        Role = role,
-                        Character = db.Characters.Where(x => x.Number == cnumber).First(),
-                        Ability1 = db.Abilities.Where(x => x.Role.Number == role.Number && x.Number == a1).First(),
-                        Ability2 = db.Abilities.Where(x => x.Role.Number == role.Number && x.Number == a2).First(),
-                        Exercise = e
-                    };
-                    e1.Code = e1.ToString();
-                }
-                while (db.Exercises1.Where(x => x.Code == e1.Code).FirstOrDefault() != null);
-                elist.Add(e1);
+                case 1:
+                    Exercise1(e);
+                    break;
             }
-            db.Exercises1.AddRange(elist);
 
-            // Задание 2 РК1
-            string codever;
-            List<Storage.Exercise2> list2;
-            do
-            {
-                codever = string.Empty;
-                list2 = new List<Storage.Exercise2>();
-                // Список всех строк кода данного РК
-                foreach (int row in db.CodeRows.Where(x => x.Assessment.ID == aid).Select(x => x.Row).Distinct())
-                {
-                    // Определение количества вариантов строки
-                    int versions = db.CodeRows.Where(x => (x.Assessment.ID) == aid && (x.Row == row)).Count();
-                    // Случайный выбор варианта
-                    int version = (versions == 1) ? 1 : rnd.Next(1, versions + 1);
-                    // Загрузка варианта
-                    var code = db.CodeRows.Where(x => (x.Assessment.ID) == aid && (x.Row == row) && (x.Version == version)).First();
-                    // Ключ варианта
-                    codever += version;
-                    // Сохранение варианта
-                    list2.Add(new Storage.Exercise2()
-                    {
-                        Exercise = e,
-                        CodeRow = code
-                    });
-                }
-            }
-            while (db.Exercises.Where(x => x.CodeVersion == codever).FirstOrDefault() != null);
-            db.Exercises2.AddRange(list2);
 
             // Сохранение уникального задания
             db.Exercises.Add(e);

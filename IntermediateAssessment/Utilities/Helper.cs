@@ -17,10 +17,10 @@ namespace IntermediateAssessment.Utilities
         private static Random rnd = new Random();
 
         /// <summary>
-        /// Генерация вектора неповторяющихся случайных чисел заданной длины
+        /// Генерация вектора неповторяющихся случайных целых чисел заданной длины
         /// </summary>
-        /// <param name="count"></param>
-        /// <param name="max"></param>
+        /// <param name="count">Количество чисел</param>
+        /// <param name="max">Максимальное число</param>
         /// <returns></returns>
         public static List<int> Randoms(int count, int max)
         {

@@ -70,6 +70,11 @@ namespace IntermediateAssessment.Storage
         public virtual DbSet<Exercise2> Exercises2 { get; set; }
 
         /// <summary>
+        /// Задания РК2N1
+        /// </summary>
+        public virtual DbSet<Exercise3> Exercises3 { get; set; }
+
+        /// <summary>
         /// Строки кода
         /// </summary>
         public virtual DbSet<CodeRow> CodeRows { get; set; }
