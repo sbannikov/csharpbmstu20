@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -9,14 +11,8 @@ namespace IntermediateAssessment.Storage
     /// <summary>
     /// РК2 Задание № 1 - Agile
     /// </summary>
-    public class Exercise3 : Entity
+    public class Exercise3 : Exercise0n
     {
-        /// <summary>
-        /// Задание студенту на РК
-        /// </summary>
-        [Required()]
-        public virtual Exercise Exercise { get; set; }
-
         /// <summary>
         /// Принцип Agile (один из 12)
         /// </summary>
@@ -26,6 +22,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Порядковый номер принципа в задании
         /// </summary>
-        public int Number { get; set; }
+        [DisplayName("№")]
+        public int Number { get; set; }       
     }
 }

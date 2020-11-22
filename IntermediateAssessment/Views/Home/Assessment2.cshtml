@@ -47,8 +47,62 @@
 @using (Html.BeginForm("Assessment2", "Home", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @Html.Hidden($"id", Model.ID)
-    @Html.Hidden($"character", null)
+    @Html.Hidden("id", Model.ID)
+    @Html.Hidden("answer", null)
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Exercises3.First().Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Exercises3.First().Principle.Name)
+            </th>
+            <th>
+                №&nbsp;ценности&nbsp;Agile
+            </th>
+        </tr>
+        @foreach (var e3 in Model.Exercises3.OrderBy(e => e.Number))
+        {
+            <tr>
+                <td>@e3.Number</td>
+                <td>@e3.Principle.Name</td>
+                <td>
+                    <input class="input-validation-error" id="answer" name="answer" type="text" value="@e3.AnswerNumber" />
+                    <div class="text-danger">@e3.AnswerNumberMessage</div>
+                </td>
+            </tr>
+        }
+    </table>
+    <h2>Задание № 2</h2>
+    <p>
+        Ниже приведен код, который реализует WCF-сервис.
+        Исправить возможные ошибки в коде.
+    </p>
+    <hr />
+    <table class="table col-9">
+        <tr>
+            <th class="col-3">Код</th>
+            <th class="col-6">Исправление</th>
+        </tr>
+        @foreach (var item in Model.Exercises2)
+        {   
+    <tr>
+        <td class="text-monospace col-3">
+            @Html.Raw(item.ToString())
+        </td>
+        <td class="text-monospace col-6">
+            <input class="input-validation-error" style="width:900px" id="code" name="code" type="text" value="@item.AnswerString" />
+        </td>
+    </tr>
+        }
+    </table>
+    <p>
+        При необходимости дать дополнительные пояснения.
+    </p>
+    <textarea class="input-validation-error col-md-12" rows="10" id="text" name="text" type="text">
+    @Model.Answer
+    </textarea>
 
     <input type="submit" value="Отправить результат на проверку" class="btn btn-info col-md-12" />
 }

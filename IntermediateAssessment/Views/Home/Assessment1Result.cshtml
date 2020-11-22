@@ -94,13 +94,13 @@
             @if (item.Correct.Value)
             {
                 <td class="bg-success">
-                    @item.CharacterNumber
+                    @item.AnswerNumber
                 </td>
             }
             else
             {
                 <td class="bg-warning">
-                    @item.CharacterNumber
+                    @item.AnswerNumber
                 </td>
             }
         </tr>
@@ -108,4 +108,8 @@
 </table>
 <hr />
 <h2>Задание № 2</h2>
+<p>Вы дали ответ:</p>
+<p class="text-monospace">
+    @Model.Answer
+</p>
 <p>Будет проверено вручную</p>

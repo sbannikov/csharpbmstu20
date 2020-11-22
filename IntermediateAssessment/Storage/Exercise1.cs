@@ -11,14 +11,8 @@ namespace IntermediateAssessment.Storage
     /// <summary>
     /// РК1 Задание № 1 - Microsoft Solution Foundation
     /// </summary>
-    public class Exercise1 : Entity
-    {
-        /// <summary>
-        /// Задание студенту на РК
-        /// </summary>
-        [Required()]
-        public virtual Exercise Exercise { get; set; }
-
+    public class Exercise1 : Exercise0n
+    {   
         /// <summary>
         /// Роль 
         /// </summary>
@@ -44,20 +38,7 @@ namespace IntermediateAssessment.Storage
         /// </summary>
         [MaxLength(10)]
         [Required()]
-        public string Code { get; set; }
-
-        /// <summary>
-        /// Ответ на задание - номер сотрудника
-        /// </summary>
-        public int? CharacterNumber { get; set; }
-
-        [NotMapped()]
-        public string CharacterNumberMessage { get; set; }
-
-        /// <summary>
-        /// Признак корректного ответа
-        /// </summary>
-        public bool? Correct { get; set; }
+        public string Code { get; set; }      
 
         /// <summary>
         /// Формирование кода задания

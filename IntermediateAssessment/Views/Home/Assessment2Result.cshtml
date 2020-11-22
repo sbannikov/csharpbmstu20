@@ -1,0 +1,129 @@
+﻿@model IntermediateAssessment.Storage.Exercise
+
+@{
+    ViewBag.Title = Model.Assessment.Name;
+}
+
+<h1>@Model.Assessment.Name</h1>
+
+<h2>Студент</h2>
+<table class="table-bordered col-4">
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FirstName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FirstName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.LastName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.LastName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.GroupHtml)</td>
+        <td class="col-2">@Html.Raw(Model.Student.GroupHtml)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FileNumber)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FileNumber)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.StartTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.StartTime)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.FinishTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.FinishTime)</td>
+    </tr>
+</table>
+
+<h2>Задание № 1</h2>
+<p>Вы успешно окончили МГТУ им. Н. Э. Баумана. Вы начинаете работать в небольшой компании – производителе ПО. Управление проектами в компании осуществляется по принципам гибкой разработки (Agile). Руководитель проекта хочет оценить, насколько вы понимаете ценности Agile</p>
+<ol>
+    <li>Люди и взаимодействие важнее процессов и инструментов</li>
+    <li>Работающий продукт важнее исчерпывающей документации</li>
+    <li>Сотрудничество с клиентом важнее согласования условий контракта</li>
+    <li>Готовность к изменениям важнее следования первоначальному плану</li>
+</ol>
+<p>Укажите, к каким ценностям Agile относятся принципы Agile, приведенные ниже. Указать № ценности.</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Exercises3.First().Number)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Exercises3.First().Principle.Name)
+        </th>
+        <th>
+            №&nbsp;ценности&nbsp;Agile
+        </th>
+    </tr>
+    @foreach (var e3 in Model.Exercises3.OrderBy(e => e.Number))
+    {
+        <tr>
+            <td>@e3.Number</td>
+            <td>@e3.Principle.Name</td>
+            @if (!e3.Correct.HasValue)
+            {
+                <td class="bg-info">
+                    @e3.AnswerNumber
+                </td>
+            }
+            else if (e3.Correct.Value)
+            {
+                <td class="bg-success">
+                    @e3.AnswerNumber
+                </td>
+            }
+            else
+            {
+                <td class="bg-warning">
+                    @e3.AnswerNumber
+                </td>
+            }
+        </tr>
+    }
+</table>
+<h2>Задание № 2</h2>
+<p>
+    Ниже приведен код, который реализует WCF-сервис.
+    Требовалось исправить возможные ошибки в коде.
+</p>
+<hr />
+<table class="table col-9">
+    <tr>
+        <th class="col-3">Код</th>
+        <th class="col-6">Исправление</th>
+    </tr>
+    @foreach (var item in Model.Exercises2)
+    {
+        <tr>
+            <td class="text-monospace col-3">
+                @Html.Raw(item.ToString())
+            </td>
+            @if (!item.Correct.HasValue)
+            {
+                <td class="bg-info text-monospace col-6">
+                    @item.AnswerString
+                </td>
+            }
+            else if (item.Correct.Value)
+            {
+                <td class="bg-success text-monospace col-6">
+                    @item.AnswerString
+                </td>
+            }
+            else
+            {
+                <td class="bg-warning text-monospace col-6">
+                    @item.AnswerString
+                </td>
+            }
+        </tr>
+    }
+</table>
+<p>
+    Вы дали следующее пояснение:
+</p>
+<p>
+    @Model.Answer
+</p>
+

@@ -48,7 +48,7 @@
             Компетенция 1
         </th>
         <th>
-            Компетенция 1
+            Компетенция 2
         </th>
     </tr>
 
@@ -74,8 +74,8 @@
 @using (Html.BeginForm("Assessment1", "Home", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @Html.Hidden($"id", Model.ID)
-    @Html.Hidden($"character", null)
+    @Html.Hidden("id", Model.ID)
+    @Html.Hidden("answer", null)
 
     <p>Необходимо распределить их по проектным ролям в соответствии с их компетенциями. Все роли должны быть заполнены. Заполните таблицу, проставляя табельный номер сотрудника у выбранной для него роли</p>
     <table class="table">
@@ -94,8 +94,8 @@
                     @item.Role.Name
                 </td>
                 <td>
-                    <input class="input-validation-error" id="character" name="character" type="text" value="@item.CharacterNumber" />
-                    <div class="text-danger">@item.CharacterNumberMessage</div>
+                    <input class="input-validation-error" id="answer" name="answer" type="text" value="@item.AnswerNumber" />
+                    <div class="text-danger">@item.AnswerNumberMessage</div>
                 </td>
             </tr>
         }

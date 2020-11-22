@@ -34,5 +34,11 @@ namespace IntermediateAssessment.Storage
         [MaxLength(255)]
         [Required()]
         public string Code { get; set; }
+
+        /// <summary>
+        /// Признак корректности строки кода 
+        /// (null, если задание не предполагает наличие корректных и некорректных строк кода)
+        /// </summary>
+        public bool? Correct { get; set; } 
     }
 }

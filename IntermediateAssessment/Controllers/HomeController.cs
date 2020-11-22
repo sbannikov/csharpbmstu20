@@ -12,6 +12,11 @@ namespace IntermediateAssessment.Controllers
     public class HomeController : DbController
     {
         /// <summary>
+        /// Количество ценностей Agile
+        /// </summary>
+        private const int ValueCount = 4;
+
+        /// <summary>
         /// Количество времени на рубежный контроль в минутах
         /// </summary>
         private const int MaxMinutes = 91;
@@ -141,10 +146,10 @@ namespace IntermediateAssessment.Controllers
         /// <summary>
         /// РК1 Задание 2 - Формирование
         /// </summary>
-        /// <param name="aid">Идентификатор РК</param>
         /// <param name="e">Уникальное задание</param>
-        private void Exercise2(Guid aid, Storage.Exercise e)
+        private void Exercise2(Storage.Exercise e)
         {
+            Guid aid = e.Assessment.ID; // Идентификатор РК
             string codever;
             List<Storage.Exercise2> list2;
             do
@@ -206,7 +211,7 @@ namespace IntermediateAssessment.Controllers
                 {
                     Exercise = e,
                     Principle = p,
-                    Number = i
+                    Number = i + 1 // Нумерацию начинаем с 1
                 };
                 db.Exercises3.Add(item);
             }
@@ -262,9 +267,20 @@ namespace IntermediateAssessment.Controllers
             {
                 case 1:
                     Exercise1(e);
+                    Exercise2(e);
                     break;
-            }
 
+                case 2:
+                    Exercise3(e);
+                    Exercise2(e);
+                    break;
+
+                case 3:
+                    break;
+
+                default:
+                    return View("Message", (object)"Некорректный номер РК");
+            }
 
             // Сохранение уникального задания
             db.Exercises.Add(e);
@@ -282,12 +298,12 @@ namespace IntermediateAssessment.Controllers
         /// <summary>
         /// Проверка и сохранение результатов РК1
         /// </summary>
-        /// <param name="character"></param>
+        /// <param name="answer"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult Assessment1(Guid id, string[] character, string xml)
+        public ActionResult Assessment1(Guid id, string[] answer, string xml)
         {
             // Чтение задания 
             var e = db.Exercises.Find(id);
@@ -306,17 +322,17 @@ namespace IntermediateAssessment.Controllers
             // Проверка первого задания
             foreach (var e1 in e.Exercises1)
             {
-                string s = character[e1.Role.Number];
+                string s = answer[e1.Role.Number];
                 int n;
                 if (int.TryParse(s, out n))
                 {
-                    e1.CharacterNumber = n;
-                    e1.Correct = e1.CharacterNumber.Value == e1.Character.Number;
+                    e1.AnswerNumber = n;
+                    e1.Correct = e1.AnswerNumber.Value == e1.Character.Number;
                 }
                 else
                 {
-                    e1.CharacterNumberMessage = "Требуется ввести число";
-                    ModelState.AddModelError("character", e1.CharacterNumberMessage);
+                    e1.AnswerNumberMessage = "Требуется ввести число";
+                    ModelState.AddModelError("answer", e1.AnswerNumberMessage);
                 }
             }
             if (ModelState.IsValid)
@@ -327,6 +343,66 @@ namespace IntermediateAssessment.Controllers
                 db.SaveChanges();
 
                 return View("Assessment1Result", e);
+            }
+            else
+            {
+                return View(e);
+            }
+        }
+
+        /// <summary>
+        /// Проверка и сохранение результатов РК2
+        /// </summary>
+        /// <param name="answer"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Assessment2(Guid id, string[] answer)
+        {
+            // Чтение задания 
+            var e = db.Exercises.Find(id);
+            if (e == null)
+            {
+                return View("Message", (object)"Некорректный идентификатор объекта");
+            }
+
+            // Проверка на превышение времени
+            e.FinishTime = DateTime.Now;
+            if ((e.FinishTime.Value - e.StartTime).TotalMinutes > MaxMinutes)
+            {
+                return View("OutOfTime", e);
+            }
+
+            // Проверка первого задания
+            foreach (var e3 in e.Exercises3)
+            {
+                string s = answer[e3.Number];
+                int n;
+                if (int.TryParse(s, out n))
+                {
+                    if ((n >= 1) && (n <= ValueCount))
+                    {
+                        e3.AnswerNumber = n;
+                    }
+                    else
+                    {
+                        e3.AnswerNumberMessage = $"Требуется ввести число от 1 до {ValueCount}";
+                        ModelState.AddModelError("answer", e3.AnswerNumberMessage);
+                    }
+                }
+                else
+                {
+                    e3.AnswerNumberMessage = $"Требуется ввести число от 1 до {ValueCount}";
+                    ModelState.AddModelError("answer", e3.AnswerNumberMessage);
+                }
+            }
+            if (ModelState.IsValid)
+            {
+                // Фиксация завершения задания
+                db.SaveChanges();
+
+                return View("Assessment2Result", e);
             }
             else
             {

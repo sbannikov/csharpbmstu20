@@ -9,18 +9,18 @@ namespace IntermediateAssessment.Storage
     /// <summary>
     /// РК 1 задание № 2
     /// </summary>
-    public class Exercise2 : Entity
+    public class Exercise2 : Exercise0
     {
-        /// <summary>
-        /// Задание студенту на РК
-        /// </summary>
-        [Required()]
-        public virtual Exercise Exercise { get; set; }
-
         /// <summary>
         /// Строка кода
         /// </summary>
         public virtual CodeRow CodeRow { get; set; }
+
+        /// <summary>
+        /// Исправленная строка кода
+        /// </summary>
+        [MaxLength(255)]
+        public string AnswerString { get; set; }
 
         /// <summary>
         /// Представление строки кода для HTML
