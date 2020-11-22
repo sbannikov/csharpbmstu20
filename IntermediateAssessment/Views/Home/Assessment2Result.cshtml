@@ -96,9 +96,24 @@
     @foreach (var item in Model.Exercises2)
     {
         <tr>
-            <td class="text-monospace col-3">
-                @Html.Raw(item.ToString())
-            </td>
+            @if (!item.CodeRow.Correct.HasValue)
+            {
+                <td class="text-monospace col-3 bg-warning">
+                    @Html.Raw(item.ToString())
+                </td>
+            }
+            else if (item.CodeRow.Correct.Value)
+            {
+                <td class="text-monospace col-3 bg-success">
+                    @Html.Raw(item.ToString())
+                </td>
+            }
+            else
+            {
+                <td class="text-monospace col-3 bg-danger">
+                    @Html.Raw(item.ToString())
+                </td>
+            }
             @if (!item.Correct.HasValue)
             {
                 <td class="bg-info text-monospace col-6">
