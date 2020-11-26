@@ -13,6 +13,7 @@ namespace IntermediateAssessment.Controllers
     /// <summary>
     /// Контроллер с базой данных
     /// </summary>
+    [Filters.Logging()]
     public abstract class DbController : Controller
     {
         /// <summary>
