@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using NLog;
 
 namespace IntermediateAssessment.Controllers
 {
@@ -20,6 +21,11 @@ namespace IntermediateAssessment.Controllers
         /// Количество времени на рубежный контроль в минутах
         /// </summary>
         private const int MaxMinutes = 91;
+
+        /// <summary>
+        /// Протоколирование журнала событий
+        /// </summary>
+        private static Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Форма регистрации пользователя
@@ -67,18 +73,26 @@ namespace IntermediateAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index([Bind(Include = "FileNumber")] Models.Login login)
         {
-            // Отсекаем пробелы на всякий случай
-            string file = login.FileNumber?.ToUpper().Trim();
-            var s = db.Students.FirstOrDefault(a => a.FileNumber == file);
-            if (s == null)
+            try
             {
-                ModelState.AddModelError("FileNumber", "Номер личного дела не найден в списке. Для регистрации на курс требуется заполнить анкету");
+                // Отсекаем пробелы на всякий случай
+                string file = login.FileNumber?.ToUpper().Trim();
+                var s = db.Students.FirstOrDefault(a => a.FileNumber == file);
+                if (s == null)
+                {
+                    ModelState.AddModelError("FileNumber", "Номер личного дела не найден в списке. Для регистрации на курс требуется заполнить анкету");
+                }
+                if (ModelState.IsValid)
+                {
+                    return RedirectToAction("Assessments", new { id = s.ID });
+                }
+                return View(login);
             }
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                return RedirectToAction("Assessments", new { id = s.ID });
+                log.Warn(ex);
+                return View(login);
             }
-            return View(login);
         }
 
         /// <summary>
@@ -87,16 +101,24 @@ namespace IntermediateAssessment.Controllers
         /// <returns></returns>
         public ActionResult Assessments(Guid id)
         {
-            var sa = new Models.StudentAssessments()
+            try
             {
-                Student = db.Students.Find(id),
-                Assessments = db.Assessments.OrderBy(a => a.Number).ToList()
-            };
-            if (sa.Student == null)
-            {
-                return View("Message", (object)"Некорректный идентификатор объекта");
+                var sa = new Models.StudentAssessments()
+                {
+                    Student = db.Students.Find(id),
+                    Assessments = db.Assessments.OrderBy(a => a.Number).ToList()
+                };
+                if (sa.Student == null)
+                {
+                    return View("Message", (object)"Некорректный идентификатор объекта");
+                }
+                return View(sa);
             }
-            return View(sa);
+            catch (Exception ex)
+            {
+                log.Warn(ex);
+                return View("Message", (object)"Внутренняя ошибка");
+            }
         }
 
         /// <summary>
@@ -227,72 +249,80 @@ namespace IntermediateAssessment.Controllers
         /// <returns></returns>
         public ActionResult Assessment(Guid sid, Guid aid)
         {
-            // Загрузка исходных данных
-            var s = db.Students.Find(sid);
-            var a = db.Assessments.Find(aid);
-            // Проверка на корректность параметров
-            if ((s == null) || (a == null))
+            try
             {
-                return View("Message", (object)"Некорректный идентификатор объекта");
+                // Загрузка исходных данных
+                var s = db.Students.Find(sid);
+                var a = db.Assessments.Find(aid);
+                // Проверка на корректность параметров
+                if ((s == null) || (a == null))
+                {
+                    return View("Message", (object)"Некорректный идентификатор объекта");
+                }
+                // Проверка на доступное время
+                if (a.StartTime > DateTime.Now)
+                {
+                    return View("Message", (object)$"{a.Name} начнётся {a.StartTime:dd-MM-yyyy} в {a.StartTime:HH:mm}");
+                }
+                // Проверка на повторный запуск
+                Storage.Exercise e = db.Exercises.Where
+                    (x => (x.Student.ID == sid) && (x.Assessment.ID == aid) && x.FinishTime.HasValue).FirstOrDefault();
+
+                // Есть завершенный РК
+                if (e != null)
+                {
+                    // Повторная сдача не допускается
+                    return View($"Assessment{a.Number}Result", e);
+                }
+
+                // Формирование уникального задания
+                e = new Storage.Exercise()
+                {
+                    Student = s,
+                    Assessment = a,
+                    // Сведения о клиенте
+                    UserAddress = Request.UserHostAddress,
+                    UserBrowser = Request.Browser.Browser,
+                    UserHost = Request.UserHostName,
+                    UserPlatform = Request.Browser.Platform
+                };
+
+                switch (a.Number)
+                {
+                    case 1:
+                        Exercise1(e);
+                        Exercise2(e);
+                        break;
+
+                    case 2:
+                        Exercise3(e);
+                        Exercise2(e);
+                        break;
+
+                    case 3:
+                        break;
+
+                    default:
+                        return View("Message", (object)"Некорректный номер РК");
+                }
+
+                // Сохранение уникального задания
+                db.Exercises.Add(e);
+                db.SaveChanges();
+
+                // Повторное чтение объекта из БД после сохранения
+                e = db.Exercises.Find(e.ID);
+
+                // Время окончания приёма задания
+                ViewBag.FinishTime = e.StartTime.AddMinutes(MaxMinutes);
+
+                return View($"Assessment{a.Number}", e);
             }
-            // Проверка на доступное время
-            if (a.StartTime > DateTime.Now)
+            catch (Exception ex)
             {
-                return View("Message", (object)$"{a.Name} начнётся {a.StartTime:dd-MM-yyyy} в {a.StartTime:HH:mm}");
+                log.Warn(ex);
+                return View("Message", (object)"Внутренняя ошибка");
             }
-            // Проверка на повторный запуск
-            Storage.Exercise e = db.Exercises.Where
-                (x => (x.Student.ID == sid) && (x.Assessment.ID == aid) && x.FinishTime.HasValue).FirstOrDefault();
-
-            // Есть завершенный РК
-            if (e != null)
-            {
-                // Повторная сдача не допускается
-                return View($"Assessment{a.Number}Result", e);
-            }
-
-            // Формирование уникального задания
-            e = new Storage.Exercise()
-            {
-                Student = s,
-                Assessment = a,
-                // Сведения о клиенте
-                UserAddress = Request.UserHostAddress,
-                UserBrowser = Request.Browser.Browser,
-                UserHost = Request.UserHostName,
-                UserPlatform = Request.Browser.Platform
-            };
-
-            switch (a.Number)
-            {
-                case 1:
-                    Exercise1(e);
-                    Exercise2(e);
-                    break;
-
-                case 2:
-                    Exercise3(e);
-                    Exercise2(e);
-                    break;
-
-                case 3:
-                    break;
-
-                default:
-                    return View("Message", (object)"Некорректный номер РК");
-            }
-
-            // Сохранение уникального задания
-            db.Exercises.Add(e);
-            db.SaveChanges();
-
-            // Повторное чтение объекта из БД после сохранения
-            e = db.Exercises.Find(e.ID);
-
-            // Время окончания приёма задания
-            ViewBag.FinishTime = e.StartTime.AddMinutes(MaxMinutes);
-
-            return View($"Assessment{a.Number}", e);
         }
 
         /// <summary>
@@ -305,48 +335,56 @@ namespace IntermediateAssessment.Controllers
         [ValidateInput(false)]
         public ActionResult Assessment1(Guid id, string[] answer, string xml)
         {
-            // Чтение задания 
-            var e = db.Exercises.Find(id);
-            if (e == null)
+            try
             {
-                return View("Message", (object)"Некорректный идентификатор объекта");
-            }
-
-            // Проверка на превышение времени
-            e.FinishTime = DateTime.Now;
-            if ((e.FinishTime.Value - e.StartTime).TotalMinutes > MaxMinutes)
-            {
-                return View("OutOfTime", e);
-            }
-
-            // Проверка первого задания
-            foreach (var e1 in e.Exercises1)
-            {
-                string s = answer[e1.Role.Number];
-                int n;
-                if (int.TryParse(s, out n))
+                // Чтение задания 
+                var e = db.Exercises.Find(id);
+                if (e == null)
                 {
-                    e1.AnswerNumber = n;
-                    e1.Correct = e1.AnswerNumber.Value == e1.Character.Number;
+                    return View("Message", (object)"Некорректный идентификатор объекта");
+                }
+
+                // Проверка на превышение времени
+                e.FinishTime = DateTime.Now;
+                if ((e.FinishTime.Value - e.StartTime).TotalMinutes > MaxMinutes)
+                {
+                    return View("OutOfTime", e);
+                }
+
+                // Проверка первого задания
+                foreach (var e1 in e.Exercises1)
+                {
+                    string s = answer[e1.Role.Number];
+                    int n;
+                    if (int.TryParse(s, out n))
+                    {
+                        e1.AnswerNumber = n;
+                        e1.Correct = e1.AnswerNumber.Value == e1.Character.Number;
+                    }
+                    else
+                    {
+                        e1.AnswerNumberMessage = "Требуется ввести число";
+                        ModelState.AddModelError("answer", e1.AnswerNumberMessage);
+                    }
+                }
+                if (ModelState.IsValid)
+                {
+                    // Фиксация ответа в свободной форме (задание 2)
+                    e.Answer = xml;
+                    // Фиксация завершения задания
+                    db.SaveChanges();
+
+                    return View("Assessment1Result", e);
                 }
                 else
                 {
-                    e1.AnswerNumberMessage = "Требуется ввести число";
-                    ModelState.AddModelError("answer", e1.AnswerNumberMessage);
+                    return View(e);
                 }
             }
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                // Фиксация ответа в свободной форме (задание 2)
-                e.Answer = xml;
-                // Фиксация завершения задания
-                db.SaveChanges();
-
-                return View("Assessment1Result", e);
-            }
-            else
-            {
-                return View(e);
+                log.Warn(ex);
+                return View("Message", (object)"Внутренняя ошибка");
             }
         }
 
@@ -358,32 +396,40 @@ namespace IntermediateAssessment.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult Assessment2(Guid id, string[] answer)
+        public ActionResult Assessment2(Guid id, string[] answer, string[] code, string text)
         {
-            // Чтение задания 
-            var e = db.Exercises.Find(id);
-            if (e == null)
+            try
             {
-                return View("Message", (object)"Некорректный идентификатор объекта");
-            }
-
-            // Проверка на превышение времени
-            e.FinishTime = DateTime.Now;
-            if ((e.FinishTime.Value - e.StartTime).TotalMinutes > MaxMinutes)
-            {
-                return View("OutOfTime", e);
-            }
-
-            // Проверка первого задания
-            foreach (var e3 in e.Exercises3)
-            {
-                string s = answer[e3.Number];
-                int n;
-                if (int.TryParse(s, out n))
+                // Чтение задания 
+                var e = db.Exercises.Find(id);
+                if (e == null)
                 {
-                    if ((n >= 1) && (n <= ValueCount))
+                    return View("Message", (object)"Некорректный идентификатор объекта");
+                }
+
+                // Проверка на превышение времени
+                e.FinishTime = DateTime.Now;
+                if ((e.FinishTime.Value - e.StartTime).TotalMinutes > MaxMinutes)
+                {
+                    return View("OutOfTime", e);
+                }
+
+                // Проверка первого задания
+                foreach (var e3 in e.Exercises3.OrderBy(x => x.Number).ToList())
+                {
+                    string s = answer[e3.Number];
+                    int n;
+                    if (int.TryParse(s, out n))
                     {
-                        e3.AnswerNumber = n;
+                        if ((n >= 1) && (n <= ValueCount))
+                        {
+                            e3.AnswerNumber = n;
+                        }
+                        else
+                        {
+                            e3.AnswerNumberMessage = $"Требуется ввести число от 1 до {ValueCount}";
+                            ModelState.AddModelError("answer", e3.AnswerNumberMessage);
+                        }
                     }
                     else
                     {
@@ -391,22 +437,53 @@ namespace IntermediateAssessment.Controllers
                         ModelState.AddModelError("answer", e3.AnswerNumberMessage);
                     }
                 }
+
+                // Проверка второго задания
+                foreach (var e2 in e.Exercises2.OrderBy(x => x.CodeRow.Row).ToList())
+                {
+                    // Сохраним данный ответ
+                    e2.AnswerString = code[e2.CodeRow.Row - 1];
+                    // Нормализация ответа для анализа
+                    string s = e2.AnswerString.Trim();
+                    // Если в задании строка кода корректная
+                    if (e2.CodeRow.IsCorrect)
+                    {
+                        // То если ее не исправили - всё хорошо, иначе это ошибка
+                        // (не чини то, что не сломалось)
+                        e2.Correct = string.IsNullOrEmpty(s);
+                        continue;
+                    }
+
+                    // Определение вариантов ответов
+                    var row = db.CodeRows.Where(x => x.Assessment.ID == e.Assessment.ID && x.Row == e2.CodeRow.Row && x.Code.Trim() == s).FirstOrDefault();
+                    if (row != null)
+                    {
+                        // Вариант ответа найден - корректность известна
+                        e2.Correct = row.Correct;
+                    }
+                    else
+                    {
+                        e2.Correct = null; // Система не может принять решение о корректности ответа
+                    }
+                }
+                if (ModelState.IsValid)
+                {
+                    // Ответ в произвольном виде
+                    e.Answer = text;
+                    // Фиксация завершения задания
+                    db.SaveChanges();
+
+                    return View("Assessment2Result", e);
+                }
                 else
                 {
-                    e3.AnswerNumberMessage = $"Требуется ввести число от 1 до {ValueCount}";
-                    ModelState.AddModelError("answer", e3.AnswerNumberMessage);
+                    return View(e);
                 }
             }
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                // Фиксация завершения задания
-                db.SaveChanges();
-
-                return View("Assessment2Result", e);
-            }
-            else
-            {
-                return View(e);
+                log.Warn(ex);
+                return View("Message", (object)"Внутренняя ошибка");
             }
         }
     }

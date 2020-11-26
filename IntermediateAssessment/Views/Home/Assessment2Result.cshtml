@@ -93,42 +93,42 @@
         <th class="col-3">Код</th>
         <th class="col-6">Исправление</th>
     </tr>
-    @foreach (var item in Model.Exercises2)
+    @foreach (var item in Model.Exercises2.OrderBy(x=>x.CodeRow.Row))
     {
         <tr>
             @if (!item.CodeRow.Correct.HasValue)
             {
-                <td class="text-monospace col-3 bg-warning">
+                <td class="text-monospace w-50 bg-info">
                     @Html.Raw(item.ToString())
                 </td>
             }
             else if (item.CodeRow.Correct.Value)
             {
-                <td class="text-monospace col-3 bg-success">
+                <td class="text-monospace w-50 bg-success">
                     @Html.Raw(item.ToString())
                 </td>
             }
             else
             {
-                <td class="text-monospace col-3 bg-danger">
+                <td class="text-monospace w-50  bg-warning">
                     @Html.Raw(item.ToString())
                 </td>
             }
             @if (!item.Correct.HasValue)
             {
-                <td class="bg-info text-monospace col-6">
+                <td class="bg-light text-monospace w-100 ">
                     @item.AnswerString
                 </td>
             }
             else if (item.Correct.Value)
             {
-                <td class="bg-success text-monospace col-6">
+                <td class="bg-success text-monospace w-100 ">
                     @item.AnswerString
                 </td>
             }
             else
             {
-                <td class="bg-warning text-monospace col-6">
+                <td class="bg-warning text-monospace w-100">
                     @item.AnswerString
                 </td>
             }
@@ -141,4 +141,10 @@
 <p>
     @Model.Answer
 </p>
-
+<h2>Условные обозначения</h2>
+<table>
+    <tr><td class="w-50 bg-success">&nbsp;</td><td>Корректно</td></tr>
+    <tr><td class="w-50 bg-warning">&nbsp;</td><td>Некорректно</td></tr>
+    <tr><td class="w-50 bg-info">&nbsp;</td><td>Формально корректно, но имеет смысл улучшить</td></tr>
+    <tr><td class="w-50 bg-light">&nbsp;</td><td>Корректность должна быть проверена вручную</td></tr>
+</table>

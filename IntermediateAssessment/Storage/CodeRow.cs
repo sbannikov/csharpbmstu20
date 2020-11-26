@@ -19,12 +19,12 @@ namespace IntermediateAssessment.Storage
         public virtual Assessment Assessment { get; set; }
 
         /// <summary>
-        /// Номер строки кода
+        /// Номер строки кода, начиная с 1
         /// </summary>
         public int Row { get; set; }
 
         /// <summary>
-        /// Вариант строки кода
+        /// Вариант строки кода, начиная с 1
         /// </summary>
         public int Version { get; set; }
 
@@ -43,5 +43,16 @@ namespace IntermediateAssessment.Storage
         /// null - задание не предполагает проверки кода, или строка может быть улучшена, но ошибочной не является
         /// </summary>
         public bool? Correct { get; set; } 
+
+        /// <summary>
+        /// Признак корректного ответа
+        /// </summary>
+        public bool IsCorrect
+        { 
+            get
+            {
+                return Correct.HasValue && Correct.Value;
+            }
+        }
     }
 }

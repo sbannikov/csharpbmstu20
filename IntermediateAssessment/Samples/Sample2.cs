@@ -38,7 +38,7 @@ namespace IntermediateAssessment.Samples
     public interface IExercise2
     {
         // Обратная матрица
-        [OperationContract()]        
+        [OperationContract()]
         Matrix Inversion(Matrix m);
 
         // Определитель матрицы
@@ -71,7 +71,7 @@ namespace IntermediateAssessment.Samples
         static void Main(string[] args)
         {
             ServiceHost host;
-            host = new ServiceHost(typeof (Exercise2));
+            host = new ServiceHost(typeof(Exercise2));
 
             host.Open();
             Console.WriteLine("Сервис запущен");
