@@ -71,22 +71,39 @@ namespace IntermediateAssessment.Storage
         }
 
         /// <summary>
-        /// Признак сданного РК1
-        /// [!] переписать для многих РК
+        /// Признак сданного РК
+        /// null - не было попытки сдачи
+        /// false - РК начат, но не отправлен
+        /// true - РК отправлен
         /// </summary>
-        public bool Passed
+        public bool? Passed(int n)
         {
-            get { return Exercises.FirstOrDefault(x => x.FinishTime != null) != null; }
+            {
+                if (Exercises.Any(x => x.FinishTime != null && x.Assessment.Number == n))
+                {
+                    return true;
+                }
+                else if (Exercises.Any(x => x.Assessment.Number == n))
+                {
+                    return false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         /// <summary>
-        /// Отображаемый статус РК1
-        /// [!] переписать для многих РК
+        /// Отображаемый статус РК
         /// </summary>
-        [DisplayName("Статус РК1")]
-        public string Status
+        [DisplayName("Статус РК")]
+        public string Status(int n)
         {
-            get { return Passed ? "сдан" : dash; }
+            {
+                bool? passed = Passed(n);
+                return passed.HasValue ? (passed.Value ? "сдан" : "в процессе") : dash;
+            }
         }
     }
 }

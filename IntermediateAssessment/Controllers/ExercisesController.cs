@@ -22,23 +22,35 @@ namespace IntermediateAssessment.Controllers
         public ActionResult Index()
         {
             // https://docs.microsoft.com/ru-ru/dotnet/csharp/linq/perform-left-outer-joins
+
+            // Список всех студентов
             var list = db.Students.OrderBy(x => x.FileNumber).ToList();
-            int width = (int)Math.Round(Math.Sqrt(list.Count() + 0.51));
+            DateTime now = DateTime.Now;
+            // Количество доступных РК
+            int count = db.Assessments.Where(x => x.StartTime < now).Count();
+            int width = (int)Math.Round(Math.Sqrt(count * list.Count() + 0.51));
             var m = new Models.ExercisesMatrix();
-            int n = 0;
-            while (n < list.Count())
+            int nstudent = 0;
+            int nassessment = 1;
+            while (nstudent < list.Count())
             {
                 var il = new List<Models.MatrixItem>();
                 for (int i = 0; i < width; i++)
                 {
+                    bool? passed = list[nstudent].Passed(nassessment);
                     var item = new Models.MatrixItem()
                     {
-                        Color = list[n].Passed ? "green" : "yellow",
-                        FileNumber = list[n].FileNumber
+                        Color = passed.HasValue ? (passed.Value ? "green" : "yellow") : "grey",
+                        FileNumber = list[nstudent].FileNumber
                     };
                     il.Add(item);
-                    n++;
-                    if (n >= list.Count()) { break; }
+                    // Следующая ячейка
+                    if (++nassessment > count)
+                    {
+                        nassessment = 1;
+                        nstudent++;
+                        if (nstudent >= list.Count()) { break; }
+                    }
                 }
                 m.Items.Add(il);
             }
@@ -51,6 +63,12 @@ namespace IntermediateAssessment.Controllers
         /// <returns></returns>
         public ActionResult Report()
         {
+            DateTime now = DateTime.Now;
+            // Доступные РК
+            var alist = db.Assessments.Where(x => x.StartTime < now).ToList();
+            int count = alist.Count();
+
+            // Список групп
             var groups = db.Students.Select(a => a.Group).Distinct()
                 .Select(a => new Models.Group() { GroupName = a }).ToList();
 
@@ -59,11 +77,17 @@ namespace IntermediateAssessment.Controllers
                 var students = db.Students.Where(a => a.Group == group.GroupName).OrderBy(a => a.LastName).ToList();
                 foreach (var student in students)
                 {
-                    group.Students.Add(new Models.Student(student));
+                    group.Students.Add(new Models.Student(student, count));
                 }
             }
 
-            return View(groups);
+            // Данные для отетча
+            var report = new Models.Report(alist, groups);
+
+            // Количество столбцов в отчете: фамилия, имя, группа, и на каждый РК
+            ViewBag.ColSpan = 3 + count;
+
+            return View(report);
         }
     }
 }

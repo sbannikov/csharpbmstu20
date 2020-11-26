@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IntermediateAssessment.Models.Group>
+﻿@model IntermediateAssessment.Models.Report
 
 @{
     ViewBag.Title = "Список студентов";
@@ -8,24 +8,27 @@
 
 <table class="table-bordered">
     <tr class="bg-light">
-        <th>
-            @Html.DisplayNameFor(model => model.Students.First().ListNumber)
+        <th class="text-center">
+            @Html.DisplayNameFor(model => model.Groups.First().Students.First().ListNumber)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Students.First().LastName)
+        <th class="text-center">
+            @Html.DisplayNameFor(model => model.Groups.First().Students.First().LastName)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Students.First().FirstName)
+        <th class="text-center">
+            @Html.DisplayNameFor(model => model.Groups.First().Students.First().FirstName)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Students.First().Status)
-        </th>
+        @foreach (var a in Model.Assessments)
+        {
+            <th class="text-center">
+                РК @a.Number
+            </th>
+        }
     </tr>
 
-    @foreach (var group in Model)
+    @foreach (var group in Model.Groups)
     {
         <tr>
-            <td colspan="4" class="text-center bg-light font-weight-bold" >
+            <td colspan="@ViewBag.ColSpan" class="text-center bg-light font-weight-bold">
                 @Html.DisplayFor(modelItem => group.GroupName)
             </td>
         </tr>
@@ -41,9 +44,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => student.FirstName)
                 </td>
-                <td>
-                    @Html.Raw(student.Status)
-                </td>
+                @foreach (var status in student.Status)
+                {
+                    <td>
+                        @Html.Raw(status)
+                    </td>
+                }
             </tr>
         }
     }

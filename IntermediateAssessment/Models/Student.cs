@@ -42,19 +42,22 @@ namespace IntermediateAssessment.Models
         public int ListNumber { get; set; }
 
         /// <summary>
-        /// Отображаемый статус РК1
-        /// [!] переписать для многих РК
+        /// Отображаемый статус РК
         /// </summary>
-        [DisplayName("Статус РК1")]
-        public string Status { get; set; }
+        [DisplayName("Статус ")]
+        public List<string> Status { get; set; }
 
-        public Student(Storage.Student student)
+        public Student(Storage.Student student, int count)
         {
             FileNumber = student.FileNumber;
             FirstName = student.FirstName;
             LastName = student.LastName;
             ListNumber = student.ListNumber;
-            Status = student.Status;
+            Status = new List<string>();
+            for (int n = 1; n <= count; n++)
+            {
+                Status.Add(student.Status(n));
+            }
         }
     }
 }

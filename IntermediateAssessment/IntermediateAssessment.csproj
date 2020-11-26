@@ -196,6 +196,7 @@
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\MatrixItem.cs" />
+    <Compile Include="Models\Report.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\StudentAssessments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
