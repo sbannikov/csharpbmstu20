@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotControlPanel", "BotContr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpBotCommon", "CSharpBotCommon\CSharpBotCommon.csproj", "{EBD3CEA2-3FE9-4224-93A0-65FDB94DF9E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotControlPanelWeb", "BotControlPanelWeb\BotControlPanelWeb.csproj", "{B76A64CA-112E-404C-86A8-3F9138A5B8CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EBD3CEA2-3FE9-4224-93A0-65FDB94DF9E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBD3CEA2-3FE9-4224-93A0-65FDB94DF9E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBD3CEA2-3FE9-4224-93A0-65FDB94DF9E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B76A64CA-112E-404C-86A8-3F9138A5B8CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B76A64CA-112E-404C-86A8-3F9138A5B8CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B76A64CA-112E-404C-86A8-3F9138A5B8CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B76A64CA-112E-404C-86A8-3F9138A5B8CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
