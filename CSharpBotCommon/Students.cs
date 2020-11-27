@@ -11,15 +11,33 @@ namespace BmstuCSharpBot
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Students
     {
         public System.Guid ID { get; set; }
+
+        [Display(Name = "Фамилия")]
+        [Required()]
+        [MaxLength(255)]
         public string LastName { get; set; }
+
+        [Display(Name = "Имя")]
+        [Required()]
+        [MaxLength(255)]
         public string FirstName { get; set; }
+
+        [Display(Name = "Группа")]
         public string Group { get; set; }
+
+        [Display(Name = "Номер зачетной книжки")]
         public string FileName { get; set; }
+
+        [Display(Name = "E-mail")]
+        [EmailAddress()]
         public string Email { get; set; }
+
+        [Display(Name = "Номер телефона")]
         public string Phone { get; set; }
     }
 }

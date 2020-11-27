@@ -14,10 +14,16 @@ namespace BotControlPanelWeb.Controllers
     {
         private DB db = new DB();
 
-        // GET: Students
+        /// <summary>
+        /// Список студентов
+        /// GET: Students/Index
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
-            return View(db.Students.ToList());
+            // Сортировка списка студентов по группе и далее по фамилии
+            var list = db.Students.OrderBy(x => x.Group).ThenBy(x => x.LastName).ToList();
+            return View(list);
         }
 
         // GET: Students/Details/5
@@ -27,12 +33,12 @@ namespace BotControlPanelWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Students students = db.Students.Find(id);
-            if (students == null)
+            Students student = db.Students.Find(id);
+            if (student == null)
             {
                 return HttpNotFound();
             }
-            return View(students);
+            return View(student);
         }
 
         // GET: Students/Create
@@ -46,8 +52,14 @@ namespace BotControlPanelWeb.Controllers
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,LastName,FirstName,Group,FileName,Email,Phone")] Students students)
+        public ActionResult Create([Bind(Include = "LastName,FirstName,Group,FileName,Email,Phone")] Students students)
         {
+            long phone;
+            if (!long.TryParse(students.Phone, out phone))
+            {
+                ModelState.AddModelError("Phone", "Номер телефона должен состоять только из цифр");
+            }
+
             if (ModelState.IsValid)
             {
                 students.ID = Guid.NewGuid();
