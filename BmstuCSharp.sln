@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmstuCSharpBot", "BmstuCSharpBot\BmstuCSharpBot.csproj", "{A3FA0819-888B-411D-810D-43FF0A5BFE8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntermediateAssessment", "IntermediateAssessment\IntermediateAssessment.csproj", "{D44748C4-8CD7-484C-9AFD-D324C5032CB4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotControlPanel", "BotControlPanel\BotControlPanel.csproj", "{FD87A6FD-5296-4C79-A03A-0290375846B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpBotCommon", "CSharpBotCommon\CSharpBotCommon.csproj", "{EBD3CEA2-3FE9-4224-93A0-65FDB94DF9E0}"
@@ -23,10 +21,6 @@ Global
 		{A3FA0819-888B-411D-810D-43FF0A5BFE8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3FA0819-888B-411D-810D-43FF0A5BFE8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3FA0819-888B-411D-810D-43FF0A5BFE8D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D44748C4-8CD7-484C-9AFD-D324C5032CB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D44748C4-8CD7-484C-9AFD-D324C5032CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D44748C4-8CD7-484C-9AFD-D324C5032CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D44748C4-8CD7-484C-9AFD-D324C5032CB4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD87A6FD-5296-4C79-A03A-0290375846B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD87A6FD-5296-4C79-A03A-0290375846B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD87A6FD-5296-4C79-A03A-0290375846B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
