@@ -70,7 +70,6 @@ namespace IntermediateAssessment.Controllers
         /// <param name="login">Имя личного дела</param>
         /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Index([Bind(Include = "FileNumber")] Models.Login login)
         {
             try
@@ -331,7 +330,6 @@ namespace IntermediateAssessment.Controllers
         /// <param name="answer"></param>
         /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Assessment1(Guid id, string[] answer, string xml)
         {
@@ -394,7 +392,6 @@ namespace IntermediateAssessment.Controllers
         /// <param name="answer"></param>
         /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Assessment2(Guid id, string[] answer, string[] code, string text)
         {

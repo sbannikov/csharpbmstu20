@@ -46,7 +46,6 @@
 
 @using (Html.BeginForm("Assessment2", "Home", FormMethod.Post))
 {
-    @Html.AntiForgeryToken()
     @Html.Hidden("id", Model.ID)
     @Html.Hidden("answer", null)
 

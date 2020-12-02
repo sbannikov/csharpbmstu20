@@ -28,7 +28,7 @@
 {
     using (Html.BeginForm("Assessment", "Home", FormMethod.Post))
     {
-        @Html.AntiForgeryToken()
+        
         @Html.Hidden("sid", Model.Student.ID)
         @Html.Hidden("aid", item.ID)
         <div class="table">
