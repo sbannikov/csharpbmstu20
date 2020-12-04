@@ -63,6 +63,9 @@ namespace BmstuCSharpBot
         /// </summary>
         public string Group;
 
+        /// <summary>
+        /// Полнота профиля пользователя
+        /// </summary>
         public bool IsFull
         {
             get
