@@ -250,6 +250,8 @@ namespace IntermediateAssessment.Controllers
         {
             try
             {
+                DateTime now = DateTime.Now;
+
                 // Загрузка исходных данных
                 var s = db.Students.Find(sid);
                 var a = db.Assessments.Find(aid);
@@ -263,8 +265,11 @@ namespace IntermediateAssessment.Controllers
                 {
                     return View("Message", (object)$"{a.Name} начнётся {a.StartTime:dd-MM-yyyy} в {a.StartTime:HH:mm}");
                 }
+
+                Storage.Exercise e;
+
                 // Проверка на повторный запуск
-                Storage.Exercise e = db.Exercises.Where
+                e = db.Exercises.Where
                     (x => (x.Student.ID == sid) && (x.Assessment.ID == aid) && x.FinishTime.HasValue).FirstOrDefault();
 
                 // Есть завершенный РК
@@ -274,43 +279,54 @@ namespace IntermediateAssessment.Controllers
                     return View($"Assessment{a.Number}Result", e);
                 }
 
-                // Формирование уникального задания
-                e = new Storage.Exercise()
+                // Проверка на идущий рубежный контроль
+                e = db.Exercises
+                    .Where(x => (x.Student.ID == sid) && (x.Assessment.ID == aid) && !x.FinishTime.HasValue)
+                    .ToList() // для выделения запроса сервер/клиент
+                    .Where(x => (now - x.StartTime).TotalMinutes < MaxMinutes)
+                    .OrderByDescending(x => x.StartTime)
+                    .FirstOrDefault();
+
+                if (e == null)
                 {
-                    Student = s,
-                    Assessment = a,
-                    // Сведения о клиенте
-                    UserAddress = Request.UserHostAddress,
-                    UserBrowser = Request.Browser.Browser,
-                    UserHost = Request.UserHostName,
-                    UserPlatform = Request.Browser.Platform
-                };
+                    // Формирование уникального задания
+                    e = new Storage.Exercise()
+                    {
+                        Student = s,
+                        Assessment = a,
+                        // Сведения о клиенте
+                        UserAddress = Request.UserHostAddress,
+                        UserBrowser = Request.Browser.Browser,
+                        UserHost = Request.UserHostName,
+                        UserPlatform = Request.Browser.Platform
+                    };
 
-                switch (a.Number)
-                {
-                    case 1:
-                        Exercise1(e);
-                        Exercise2(e);
-                        break;
+                    switch (a.Number)
+                    {
+                        case 1:
+                            Exercise1(e);
+                            Exercise2(e);
+                            break;
 
-                    case 2:
-                        Exercise3(e);
-                        Exercise2(e);
-                        break;
+                        case 2:
+                            Exercise3(e);
+                            Exercise2(e);
+                            break;
 
-                    case 3:
-                        break;
+                        case 3:
+                            break;
 
-                    default:
-                        return View("Message", (object)"Некорректный номер РК");
+                        default:
+                            return View("Message", (object)"Некорректный номер РК");
+                    }
+
+                    // Сохранение уникального задания
+                    db.Exercises.Add(e);
+                    db.SaveChanges();
+
+                    // Повторное чтение объекта из БД после сохранения
+                    e = db.Exercises.Find(e.ID);
                 }
-
-                // Сохранение уникального задания
-                db.Exercises.Add(e);
-                db.SaveChanges();
-
-                // Повторное чтение объекта из БД после сохранения
-                e = db.Exercises.Find(e.ID);
 
                 // Время окончания приёма задания
                 ViewBag.FinishTime = e.StartTime.AddMinutes(MaxMinutes);
