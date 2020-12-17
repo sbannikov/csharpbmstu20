@@ -42,13 +42,19 @@ namespace IntermediateAssessment.Storage
         /// false - строка некорректна
         /// null - задание не предполагает проверки кода, или строка может быть улучшена, но ошибочной не является
         /// </summary>
-        public bool? Correct { get; set; } 
+        public bool? Correct { get; set; }
+
+        /// <summary>
+        /// Комментарий к ошибочным строкам
+        /// </summary>
+        [MaxLength(500)]
+        public string Comment { get; set; }
 
         /// <summary>
         /// Признак корректного ответа
         /// </summary>
         public bool IsCorrect
-        { 
+        {
             get
             {
                 return Correct.HasValue && Correct.Value;
