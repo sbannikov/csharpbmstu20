@@ -84,7 +84,7 @@
             <th class="col-3">Код</th>
             <th class="col-6">Исправление</th>
         </tr>
-        @foreach (var item in Model.Exercises2)
+        @foreach (var item in Model.Exercises2.OrderBy(x => x.CodeRow.Row))
         {   
     <tr>
         <td class="text-monospace col-3">

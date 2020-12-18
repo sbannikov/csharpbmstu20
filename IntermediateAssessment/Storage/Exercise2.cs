@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Text.RegularExpressions;
 
 namespace IntermediateAssessment.Storage
 {
@@ -28,6 +29,26 @@ namespace IntermediateAssessment.Storage
         /// <returns></returns>
         public override string ToString()
         {
+            if (string.IsNullOrEmpty(CodeRow.Code))
+            {
+                return "&nbsp;";
+            }
+
+            var match = Regex.Match(CodeRow.Code,@"^(?<space>\s*)(?<text>\S.*)$");
+            if (match.Success)
+            {
+                string s = "";
+                for (int i = 0; i < match.Groups["space"].Value.Length; i++)
+                {
+                    s += "&nbsp;";
+                }
+                return s + match.Groups["text"];
+            }
+            else
+            {
+                return CodeRow.Code;
+            }
+
             return string.IsNullOrEmpty(CodeRow.Code) ? "&nbsp;" : CodeRow.Code.Replace(" ", "&nbsp;");
         }
     }

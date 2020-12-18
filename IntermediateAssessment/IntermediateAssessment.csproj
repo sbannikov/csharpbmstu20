@@ -379,6 +379,8 @@
     <Content Include="Views\Exercises\Report.cshtml" />
     <Content Include="Views\Home\Assessment2.cshtml" />
     <Content Include="Views\Home\Assessment2Result.cshtml" />
+    <Content Include="Views\Home\Assessment3.cshtml" />
+    <Content Include="Views\Home\Assessment3Result.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

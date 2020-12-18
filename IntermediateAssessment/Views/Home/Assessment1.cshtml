@@ -106,7 +106,7 @@
         Код самой сериализации для простоты опущен.
     </p>
     <hr />
-    foreach (var item in Model.Exercises2)
+    foreach (var item in Model.Exercises2.OrderBy(x => x.CodeRow.Row))
     {
         <p class="text-monospace">@Html.Raw(item.ToString())</p>
     }

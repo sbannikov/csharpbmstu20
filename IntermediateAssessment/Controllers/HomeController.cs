@@ -314,6 +314,7 @@ namespace IntermediateAssessment.Controllers
                             break;
 
                         case 3:
+                            Exercise2(e);
                             break;
 
                         default:
@@ -499,5 +500,89 @@ namespace IntermediateAssessment.Controllers
                 return View("Message", (object)"Внутренняя ошибка");
             }
         }
+
+        /// <summary>
+        /// Проверка и сохранение результатов РК3
+        /// </summary>
+        /// <param name="answer"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Assessment3(Guid id, string[] code, string text)
+        {
+            try
+            {
+                // Чтение задания 
+                var e = db.Exercises.Find(id);
+                if (e == null)
+                {
+                    return View("Message", (object)"Некорректный идентификатор объекта");
+                }
+
+                // Проверка на превышение времени
+                e.FinishTime = DateTime.Now;
+                if ((e.FinishTime.Value - e.StartTime).TotalMinutes > MaxMinutes)
+                {
+                    return View("OutOfTime", e);
+                }
+
+                // Проверка второго задания
+                foreach (var e2 in e.Exercises2.OrderBy(x => x.CodeRow.Row).ToList())
+                {
+                    // Сохраним данный ответ
+                    e2.AnswerString = code[e2.CodeRow.Row - 1];
+                    // Нормализация ответа для анализа
+                    string s = e2.AnswerString.Trim();
+                    // Если в задании строка кода корректная
+                    if (e2.CodeRow.IsCorrect)
+                    {
+                        // То если ее не исправили - всё хорошо, иначе это ошибка
+                        // (не чини то, что не сломалось)
+                        e2.Correct = string.IsNullOrEmpty(s);
+                        continue;
+                    }
+
+                    // Если некоррекная строка не исправлена
+                    // (считаем, что исправление всегда не пусто)
+                    if (string.IsNullOrEmpty(s))
+                    {
+                        // Значит, ответ неверный
+                        e2.Correct = false;
+                        continue;
+                    }
+
+                    // Определение вариантов ответов
+                    var row = db.CodeRows.Where(x => x.Assessment.ID == e.Assessment.ID && x.Row == e2.CodeRow.Row && x.Code.Trim() == s).FirstOrDefault();
+                    if (row != null)
+                    {
+                        // Вариант ответа найден - корректность известна
+                        e2.Correct = row.Correct;
+                    }
+                    else
+                    {
+                        e2.Correct = null; // Система не может принять решение о корректности ответа
+                    }
+                }
+                if (ModelState.IsValid)
+                {
+                    // Ответ в произвольном виде
+                    e.Answer = text;
+                    // Фиксация завершения задания
+                    db.SaveChanges();
+
+                    return View("Assessment3Result", e);
+                }
+                else
+                {
+                    return View(e);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Warn(ex);
+                return View("Message", (object)"Внутренняя ошибка");
+            }
+        }
+
     }
 }

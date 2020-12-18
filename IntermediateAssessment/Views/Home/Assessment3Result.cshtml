@@ -1,0 +1,105 @@
+﻿@model IntermediateAssessment.Storage.Exercise
+
+@{
+    ViewBag.Title = Model.Assessment.Name;
+}
+
+<h1>@Model.Assessment.Name</h1>
+
+<h2>Студент</h2>
+<table class="table-bordered col-4">
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FirstName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FirstName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.LastName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.LastName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.GroupHtml)</td>
+        <td class="col-2">@Html.Raw(Model.Student.GroupHtml)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FileNumber)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.FileNumber)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.StartTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.StartTime)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.FinishTime)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.FinishTime)</td>
+    </tr>
+</table>
+
+<h2>Задание № 1</h2>
+<p>
+    Ниже приведен программный код.
+    Ошибочные строки отмечены желтым, даны соответствующие пояснения
+</p>
+<table class="table">
+    <tr>
+        <th class="col-4">Код</th>
+        <th class="col-4">Исправление</th>
+        <th class="col-4">Примечание</th>
+    </tr>
+    @foreach (var item in Model.Exercises2.OrderBy(x => x.CodeRow.Row))
+    {
+        <tr>
+            @if (!item.CodeRow.Correct.HasValue)
+            {
+                <td class="text-monospace col-4 bg-info">
+                    @Html.Raw(item.ToString())
+                </td>
+            }
+            else if (item.CodeRow.Correct.Value)
+            {
+                <td class="text-monospace col-4 bg-success">
+                    @Html.Raw(item.ToString())
+                </td>
+            }
+            else
+            {
+                <td class="text-monospace col-4 bg-warning">
+                    @Html.Raw(item.ToString())
+                </td>
+            }
+            @if (!item.Correct.HasValue)
+            {
+                <td class="bg-light text-monospace col-4">
+                    @item.AnswerString
+                </td>
+            }
+            else if (item.Correct.Value)
+            {
+                <td class="bg-success text-monospace col-4">
+                    @item.AnswerString
+                </td>
+            }
+            else
+            {
+                <td class="bg-warning text-monospace col-4">
+                    @item.AnswerString
+                </td>
+            }
+            <td class="col-4">
+                @item.CodeRow.Comment
+            </td>
+        </tr>
+    }
+</table>
+<p>
+    Вы дали следующее пояснение:
+</p>
+<p>
+    @Model.Answer
+</p>
+<h2>Условные обозначения</h2>
+<table>
+    <tr><td class="w-50 bg-success">&nbsp;</td><td>Корректно</td></tr>
+    <tr><td class="w-50 bg-warning">&nbsp;</td><td>Некорректно</td></tr>
+    <tr><td class="w-50 bg-info">&nbsp;</td><td>Формально корректно, но имеет смысл улучшить</td></tr>
+    <tr><td class="w-50 bg-light">&nbsp;</td><td>Корректность должна быть проверена вручную</td></tr>
+</table>
