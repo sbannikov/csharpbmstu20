@@ -65,7 +65,9 @@ namespace IntermediateAssessment.Controllers
         {
             DateTime now = DateTime.Now;
             // Доступные РК
-            var alist = db.Assessments.Where(x => x.StartTime < now).ToList();
+            var alist = db.Assessments
+                .Where(x => x.StartTime < now)
+                .OrderBy(x => x.Number).ToList();
             int count = alist.Count();
 
             // Список групп
