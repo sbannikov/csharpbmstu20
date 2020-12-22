@@ -39,52 +39,52 @@
     Ниже приведен программный код.
     Ошибочные строки отмечены желтым, даны соответствующие пояснения
 </p>
-<table class="table">
+<table class="table" style="table-layout: fixed; word-wrap: break-word;">
     <tr>
-        <th class="col-4">Код</th>
-        <th class="col-4">Исправление</th>
-        <th class="col-4">Примечание</th>
+        <th style="width: 33%">Код</th>
+        <th style="width: 33%">Исправление</th>
+        <th style="width: 33%">Примечание</th>
     </tr>
     @foreach (var item in Model.Exercises2.OrderBy(x => x.CodeRow.Row))
     {
         <tr>
             @if (!item.CodeRow.Correct.HasValue)
             {
-                <td class="text-monospace col-4 bg-info">
+                <td class="text-monospace bg-info" style="width: 33%">
                     @Html.Raw(item.ToString())
                 </td>
             }
             else if (item.CodeRow.Correct.Value)
             {
-                <td class="text-monospace col-4 bg-success">
+                <td class="text-monospace bg-success" style="width: 33%">
                     @Html.Raw(item.ToString())
                 </td>
             }
             else
             {
-                <td class="text-monospace col-4 bg-warning">
+                <td class="text-monospace bg-warning" style="width: 33%">
                     @Html.Raw(item.ToString())
                 </td>
             }
             @if (!item.Correct.HasValue)
             {
-                <td class="bg-light text-monospace col-4">
+                <td class="bg-light text-monospace" style="width: 33%">
                     @item.AnswerString
                 </td>
             }
             else if (item.Correct.Value)
             {
-                <td class="bg-success text-monospace col-4">
+                <td class="bg-success text-monospace" style="width: 33%">
                     @item.AnswerString
                 </td>
             }
             else
             {
-                <td class="bg-warning text-monospace col-4">
+                <td class="bg-warning text-monospace" style="width: 33%">
                     @item.AnswerString
                 </td>
             }
-            <td class="col-4">
+            <td style="width: 33%">
                 @item.CodeRow.Comment
             </td>
         </tr>
