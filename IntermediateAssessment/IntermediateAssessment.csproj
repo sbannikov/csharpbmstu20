@@ -195,6 +195,10 @@
     <Compile Include="Migrations\202012172305138_013.designer.cs">
       <DependentUpon>202012172305138_013.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012221323427_014.cs" />
+    <Compile Include="Migrations\202012221323427_014.designer.cs">
+      <DependentUpon>202012221323427_014.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ExercisesMatrix.cs" />
     <Compile Include="Models\Group.cs" />
@@ -381,6 +385,8 @@
     <Content Include="Views\Home\Assessment2Result.cshtml" />
     <Content Include="Views\Home\Assessment3.cshtml" />
     <Content Include="Views\Home\Assessment3Result.cshtml" />
+    <Content Include="Views\Home\Assessment4.cshtml" />
+    <Content Include="Views\Home\Assessment4Result.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -429,6 +435,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012172305138_013.resx">
       <DependentUpon>202012172305138_013.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012221323427_014.resx">
+      <DependentUpon>202012221323427_014.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

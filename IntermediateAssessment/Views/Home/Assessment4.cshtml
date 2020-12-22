@@ -1,0 +1,47 @@
+﻿@model IntermediateAssessment.Storage.Exercise
+
+@{
+    ViewBag.Title = Model.Assessment.Name;
+}
+
+<h1>@Model.Assessment.Name</h1>
+
+<h2>Студент</h2>
+<table class="table-bordered col-md-6">
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FirstName)</td>
+        <td class="col-4">@Html.DisplayFor(model => model.Student.FirstName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.LastName)</td>
+        <td class="col-2">@Html.DisplayFor(model => model.Student.LastName)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.GroupHtml)</td>
+        <td class="col-4">@Html.Raw(Model.Student.GroupHtml)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.Student.FileNumber)</td>
+        <td class="col-4">@Html.DisplayFor(model => model.Student.FileNumber)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">@Html.DisplayNameFor(model => model.StartTime)</td>
+        <td class="col-4">@Html.DisplayFor(model => model.StartTime)</td>
+    </tr>
+    <tr>
+        <td class="bg-light col-2">Время окончания приёма задания</td>
+        <td class="col-4">@ViewBag.FinishTime</td>
+    </tr>
+</table>
+
+<h2>Домашнее задание</h2>
+<p>Введите ссылку на репозиторий GIT, содержащий код домашнего задания</p>
+
+@using (Html.BeginForm("Assessment4", "Home", FormMethod.Post))
+{
+    @Html.Hidden("id", Model.ID)
+    <input class="input-validation-error col-md-12" style="width:2000px" id="url" name="url" type="text" value="@Model.Answer" />
+    <hr />
+
+    <input type="submit" value="Отправить результат на проверку" class="btn btn-info col-md-6" />
+}

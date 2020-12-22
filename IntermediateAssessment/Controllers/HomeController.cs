@@ -317,6 +317,9 @@ namespace IntermediateAssessment.Controllers
                             Exercise2(e);
                             break;
 
+                        case 4: // Домашнее задание
+                            break;
+
                         default:
                             return View("Message", (object)"Некорректный номер РК");
                     }
@@ -584,5 +587,45 @@ namespace IntermediateAssessment.Controllers
             }
         }
 
+        /// <summary>
+        /// Cохранение результатов ДЗ
+        /// </summary>
+        /// <param name="answer"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Assessment4(Guid id, string url)
+        {
+            try
+            {
+                // Чтение задания 
+                var e = db.Exercises.Find(id);
+                if (e == null)
+                {
+                    return View("Message", (object)"Некорректный идентификатор объекта");
+                }
+                // Сохранение времени финиша
+                e.FinishTime = DateTime.Now;
+
+                if (ModelState.IsValid)
+                {
+                    // Ответ в произвольном виде
+                    e.Answer = url;
+                    // Фиксация завершения задания
+                    db.SaveChanges();
+
+                    return View("Assessment4Result", e);
+                }
+                else
+                {
+                    return View(e);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Warn(ex);
+                return View("Message", (object)"Внутренняя ошибка");
+            }
+        }
     }
 }

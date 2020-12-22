@@ -16,12 +16,19 @@ namespace IntermediateAssessment.Storage
         public int Number { get; set; }
 
         /// <summary>
-        /// Наименование рубежного контроля
+        /// Полное наименование контрольного мероприятия
         /// </summary>
         [DisplayName("Название РК")]
         [MaxLength(255)]
         [Required()]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Краткое наименование контрольного мероприятия
+        /// </summary>
+        [MaxLength(4)]
+        [Required()]
+        public string ShortName { get; set; }
 
         /// <summary>
         /// Время начала рубежного контроля
