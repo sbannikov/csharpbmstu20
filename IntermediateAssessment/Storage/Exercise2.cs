@@ -42,7 +42,9 @@ namespace IntermediateAssessment.Storage
                 {
                     s += "&nbsp;";
                 }
-                return s + match.Groups["text"];
+                // Экранирование специальных для HTML символов
+                string h = System.Net.WebUtility.HtmlEncode(match.Groups["text"].Value);
+                return s + h;
             }
             else
             {
