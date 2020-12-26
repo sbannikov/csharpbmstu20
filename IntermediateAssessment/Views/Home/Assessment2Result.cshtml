@@ -88,47 +88,47 @@
     Требовалось исправить возможные ошибки в коде.
 </p>
 <hr />
-<table class="table col-9">
+<table class="table" style="table-layout: fixed; word-wrap: break-word;">
     <tr>
-        <th class="col-3">Код</th>
-        <th class="col-6">Исправление</th>
+        <th style="width: 50%">Код</th>
+        <th style="width: 50%">Исправление</th>
     </tr>
     @foreach (var item in Model.Exercises2.OrderBy(x=>x.CodeRow.Row))
     {
         <tr>
             @if (!item.CodeRow.Correct.HasValue)
             {
-                <td class="text-monospace w-50 bg-info">
+                <td class="text-monospace bg-info" style="width: 50%">
                     @Html.Raw(item.ToString())
                 </td>
             }
             else if (item.CodeRow.Correct.Value)
             {
-                <td class="text-monospace w-50 bg-success">
+                <td class="text-monospace bg-success" style="width: 50%">
                     @Html.Raw(item.ToString())
                 </td>
             }
             else
             {
-                <td class="text-monospace w-50  bg-warning">
+                <td class="text-monospace bg-warning" style="width: 50%">
                     @Html.Raw(item.ToString())
                 </td>
             }
             @if (!item.Correct.HasValue)
             {
-                <td class="bg-light text-monospace w-100 ">
+                <td class="bg-light text-monospace" style="width: 50%">
                     @item.AnswerString
                 </td>
             }
             else if (item.Correct.Value)
             {
-                <td class="bg-success text-monospace w-100 ">
+                <td class="bg-success text-monospace" style="width: 50%">
                     @item.AnswerString
                 </td>
             }
             else
             {
-                <td class="bg-warning text-monospace w-100">
+                <td class="bg-warning text-monospace" style="width: 50%">
                     @item.AnswerString
                 </td>
             }

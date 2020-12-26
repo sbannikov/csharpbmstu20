@@ -79,18 +79,18 @@
         Исправить возможные ошибки в коде.
     </p>
     <hr />
-    <table class="table-borderless col-9">
+    <table class="table-borderless" style="table-layout: fixed; word-wrap: break-word;">
         <tr>
-            <th class="col-3">Код</th>
-            <th class="col-6">Исправление</th>
+            <th style="width: 50%">Код</th>
+            <th style="width: 50%">Исправление</th>
         </tr>
         @foreach (var item in Model.Exercises2.OrderBy(x => x.CodeRow.Row))
         {   
     <tr>
-        <td class="text-monospace col-3">
+        <td class="text-monospace" style="width: 50%">
             @Html.Raw(item.ToString())
         </td>
-        <td class="text-monospace col-6">
+        <td class="text-monospace" style="width: 50%">
             <input class="input-validation-error" style="width:900px" id="code" name="code" type="text" value="@item.AnswerString" />
         </td>
     </tr>

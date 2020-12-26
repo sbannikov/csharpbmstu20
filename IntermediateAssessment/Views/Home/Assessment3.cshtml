@@ -44,18 +44,18 @@
         Код должен соответствовать требованиям в комментариях
     </p>
     <hr />
-    <table class="table-borderless">
+    <table class="table-borderless" style="table-layout: fixed; word-wrap: break-word;">
         <tr>
-            <th class="col-6">Код</th>
-            <th class="col-6">Исправление</th>
+            <th class="width: 50%">Код</th>
+            <th class="width: 50%">Исправление</th>
         </tr>
         @foreach (var item in Model.Exercises2.OrderBy(x => x.CodeRow.Row))
         {
             <tr>
-                <td class="text-monospace col-6">
+                <td class="text-monospace" style="width: 50%">
                     @Html.Raw(item.ToString())
                 </td>
-                <td class="text-monospace col-6">
+                <td class="text-monospace" style="width: 50%">
                     <input class="input-validation-error" style="width:1000px" id="code" name="code" type="text" value="@item.AnswerString" />
                 </td>
             </tr>
