@@ -45,7 +45,7 @@ namespace IntermediateAssessment.Models
         /// Отображаемый статус РК
         /// </summary>
         [DisplayName("Статус ")]
-        public List<string> Status { get; set; }
+        public List<MatrixItem> Status { get; set; }
 
         public Student(Storage.Student student, int count)
         {
@@ -53,10 +53,10 @@ namespace IntermediateAssessment.Models
             FirstName = student.FirstName;
             LastName = student.LastName;
             ListNumber = student.ListNumber;
-            Status = new List<string>();
+            Status = new List<MatrixItem>();
             for (int n = 1; n <= count; n++)
             {
-                Status.Add(student.Status(n));
+                Status.Add(new MatrixItem(student.Exercise(n)));
             }
         }
     }

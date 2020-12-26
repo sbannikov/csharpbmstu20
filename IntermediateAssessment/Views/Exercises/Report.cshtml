@@ -46,8 +46,15 @@
                 </td>
                 @foreach (var status in student.Status)
                 {
-                    <td>
-                        @Html.Raw(status)
+                    <td style="background-color: @status.Color; text-align:center">
+                        @if (status.Passed)
+                        {
+                            @Html.ActionLink(status.Status, "Exercise", "Home", new { id = status.Exercise.ID }, new { style = "font-weight:700;" })
+                        }
+                        else
+                        {
+                            @Html.Raw(status.Status)
+                        }
                     </td>
                 }
             </tr>

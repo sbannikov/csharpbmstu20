@@ -10,7 +10,51 @@ namespace IntermediateAssessment.Models
     /// </summary>
     public class MatrixItem
     {
-        public string FileNumber;
-        public string Color;
+        /// <summary>
+        /// Ссылка на выполненное задание
+        /// </summary>
+        public Storage.Exercise Exercise { get; private set; }
+
+        /// <summary>
+        /// Конструктор по заданию
+        /// </summary>
+        /// <param name="exercise">Задание</param>
+        public MatrixItem(Storage.Exercise exercise)
+        {
+            Exercise = exercise;
+        }
+
+        /// <summary>
+        /// Задание сдано
+        /// </summary>
+        public bool Passed
+        {
+            get
+            {
+                return (Exercise != null) ? Exercise.Passed : false;
+            }
+        }
+
+        /// <summary>
+        /// Отображаемый цвет в матрице
+        /// </summary>
+        public string Color
+        {
+            get
+            {
+                return (Exercise != null) ? (Exercise.Passed ? "lightgreen" : "lightyellow") : "lightgrey";
+            }
+        }
+
+        /// <summary>
+        /// Состояния задания
+        /// </summary>
+        public string Status
+        {
+            get
+            {
+                return (Exercise != null) ? (Exercise.Passed ? "сдан" : "в процессе") : Storage.Student.Dash;
+            }
+        }
     }
 }

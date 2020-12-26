@@ -37,12 +37,7 @@ namespace IntermediateAssessment.Controllers
                 var il = new List<Models.MatrixItem>();
                 for (int i = 0; i < width; i++)
                 {
-                    bool? passed = list[nstudent].Passed(nassessment);
-                    var item = new Models.MatrixItem()
-                    {
-                        Color = passed.HasValue ? (passed.Value ? "green" : "yellow") : "grey",
-                        FileNumber = list[nstudent].FileNumber
-                    };
+                    var item = new Models.MatrixItem(list[nstudent].Exercise(nassessment));
                     il.Add(item);
                     // Следующая ячейка
                     if (++nassessment > count)

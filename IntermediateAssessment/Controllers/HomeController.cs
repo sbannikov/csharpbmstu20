@@ -627,5 +627,29 @@ namespace IntermediateAssessment.Controllers
                 return View("Message", (object)"Внутренняя ошибка");
             }
         }
+
+        /// <summary>
+        /// Загрузка результата выполнения задания
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult Exercise(Guid id)
+        {
+            try
+            {
+                // Чтение задания 
+                var e = db.Exercises.Find(id);
+                if (e == null)
+                {
+                    return View("Message", (object)"Некорректный идентификатор объекта");
+                }
+                return View($"Assessment{e.Assessment.Number}Result", e); 
+            }
+            catch (Exception ex)
+            {
+                log.Warn(ex);
+                return View("Message", (object)"Внутренняя ошибка");
+            }
+        }
     }
 }

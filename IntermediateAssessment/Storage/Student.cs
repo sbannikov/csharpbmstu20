@@ -15,7 +15,7 @@ namespace IntermediateAssessment.Storage
         /// <summary>
         /// Неразрывный дефис
         /// </summary>
-        private const string dash = "&#8209;";
+        public const string Dash = "&#8209;";
 
         /// <summary>
         /// Имя
@@ -67,43 +67,24 @@ namespace IntermediateAssessment.Storage
         public string GroupHtml
         {
             // Используем неразрывный дефис
-            get { return Group.Replace("-", dash); }
+            get { return Group.Replace("-", Dash); }
         }
 
         /// <summary>
-        /// Признак сданного РК
-        /// null - не было попытки сдачи
-        /// false - РК начат, но не отправлен
-        /// true - РК отправлен
+        /// Задание с заданным номером.
+        /// Ищется сначала выполненное задание, потом - любое (только начатое)
         /// </summary>
-        public bool? Passed(int n)
+        /// <param name="n">Номер задания</param>
+        /// <returns>Задание или null, если задание отсутствует</returns>
+        public Exercise Exercise(int n)
         {
+            Exercise e = Exercises.FirstOrDefault(x => x.FinishTime != null && x.Assessment.Number == n);
+            if (e != null)
             {
-                if (Exercises.Any(x => x.FinishTime != null && x.Assessment.Number == n))
-                {
-                    return true;
-                }
-                else if (Exercises.Any(x => x.Assessment.Number == n))
-                {
-                    return false;
-                }
-                else
-                {
-                    return null;
-                }
+                return e;
             }
-        }
-
-        /// <summary>
-        /// Отображаемый статус РК
-        /// </summary>
-        [DisplayName("Статус РК")]
-        public string Status(int n)
-        {
-            {
-                bool? passed = Passed(n);
-                return passed.HasValue ? (passed.Value ? "сдан" : "в процессе") : dash;
-            }
+            e = Exercises.FirstOrDefault(x => x.Assessment.Number == n);
+            return e;
         }
     }
 }

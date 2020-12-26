@@ -120,5 +120,16 @@ namespace IntermediateAssessment.Storage
             // Задание считается выданным сразу после создания
             StartTime = DateTime.Now;
         }
+
+        /// <summary>
+        /// Признак сдачи (завершения выполнения) задания
+        /// </summary>
+        public bool Passed
+        {
+            get
+            {
+                return FinishTime.HasValue;
+            }
+        }
     }
 }
