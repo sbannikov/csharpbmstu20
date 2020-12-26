@@ -49,7 +49,7 @@
                     <td style="background-color: @status.Color; text-align:center">
                         @if (status.Passed)
                         {
-                            @Html.ActionLink(status.Status, "Exercise", "Home", new { id = status.Exercise.ID }, new { style = "font-weight:700;" })
+                            @Html.ActionLink(status.Status, "Exercise", "Home", new { id = status.Exercise.ID }, new { style = "font-weight:700;", target = "_blank" })
                         }
                         else
                         {
